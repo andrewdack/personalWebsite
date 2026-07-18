@@ -42,10 +42,10 @@ export function NowPlaying() {
       href={track.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex items-center gap-2 text-sm text-neutral-500 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+      className="group flex items-center gap-2 text-[15px] text-neutral-500 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
     >
       <SiSpotify
-        size={14}
+        size={15}
         className={track.isPlaying ? "text-[#1DB954]" : ""}
       />
       <span className="truncate">

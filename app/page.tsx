@@ -14,13 +14,13 @@ const socialLinks = [
 
 export default function Home() {
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-[600px] flex-col px-6 py-16 sm:py-24">
+    <main className="mx-auto flex min-h-screen w-full max-w-[660px] flex-col px-[26px] py-[70px] sm:py-[106px]">
       {/* Header */}
       <header className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{site.name}</h1>
-          <p className="mt-1 flex items-center gap-1.5 text-sm text-neutral-500 dark:text-neutral-400">
-            <FiMapPin size={13} />
+          <h1 className="text-[26px] font-semibold tracking-tight">{site.name}</h1>
+          <p className="mt-[5px] flex items-center gap-2 text-[15px] text-neutral-500 dark:text-neutral-400">
+            <FiMapPin size={14} />
             {site.location}
           </p>
         </div>
@@ -28,7 +28,7 @@ export default function Home() {
       </header>
 
       {/* Bio */}
-      <section className="mt-8 space-y-1 text-[15px] leading-relaxed">
+      <section className="mt-9 space-y-1 text-[17px] leading-relaxed">
         <p>{site.bio}</p>
         <p className="text-neutral-500 dark:text-neutral-400">
           {site.interests}
@@ -36,13 +36,13 @@ export default function Home() {
       </section>
 
       {/* Work */}
-      <section className="mt-12">
-        <h2 className="text-sm font-medium uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
+      <section className="mt-[53px]">
+        <h2 className="text-[15px] font-medium uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
           Work
         </h2>
-        <ul className="mt-4 space-y-3">
+        <ul className="mt-[18px] space-y-[13px]">
           {work.map((entry) => (
-            <li key={entry.role + entry.company} className="text-[15px]">
+            <li key={entry.role + entry.company} className="text-[17px]">
               {entry.role}{" "}
               <span className="text-neutral-400 dark:text-neutral-500">@</span>{" "}
               <a
@@ -59,15 +59,15 @@ export default function Home() {
       </section>
 
       {/* Projects */}
-      <section className="mt-12">
-        <h2 className="text-sm font-medium uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
+      <section className="mt-[53px]">
+        <h2 className="text-[15px] font-medium uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
           Projects
         </h2>
-        <ul className="mt-4 space-y-6">
+        <ul className="mt-[18px] space-y-[26px]">
           {projects.map((project) => (
             <li key={project.title}>
-              <div className="flex items-center gap-2.5">
-                <h3 className="text-[15px] font-medium">{project.title}</h3>
+              <div className="flex items-center gap-3">
+                <h3 className="text-[17px] font-medium">{project.title}</h3>
                 {project.github && (
                   <a
                     href={project.github}
@@ -76,7 +76,7 @@ export default function Home() {
                     aria-label={`${project.title} on GitHub`}
                     className="text-neutral-400 transition-colors hover:text-neutral-900 dark:text-neutral-500 dark:hover:text-neutral-100"
                   >
-                    <SiGithub size={14} />
+                    <SiGithub size={15} />
                   </a>
                 )}
                 {project.link && (
@@ -87,11 +87,11 @@ export default function Home() {
                     aria-label={`${project.title} live site`}
                     className="text-neutral-400 transition-colors hover:text-neutral-900 dark:text-neutral-500 dark:hover:text-neutral-100"
                   >
-                    <FiExternalLink size={14} />
+                    <FiExternalLink size={15} />
                   </a>
                 )}
               </div>
-              <p className="mt-1 text-[15px] leading-relaxed text-neutral-500 dark:text-neutral-400">
+              <p className="mt-[5px] text-[17px] leading-relaxed text-neutral-500 dark:text-neutral-400">
                 {project.description}
               </p>
             </li>
@@ -100,8 +100,8 @@ export default function Home() {
       </section>
 
       {/* Footer / socials */}
-      <footer className="mt-16 flex items-center justify-between gap-6 border-t border-neutral-200 pt-8 dark:border-neutral-800">
-        <div className="flex items-center gap-5">
+      <footer className="mt-[70px] flex items-center justify-between gap-[26px] border-t border-neutral-200 pt-9 dark:border-neutral-800">
+        <div className="flex items-center gap-[22px]">
           {socialLinks.map(({ label, href, Icon }) => (
             <a
               key={label}
@@ -111,7 +111,7 @@ export default function Home() {
               aria-label={label}
               className="text-neutral-400 transition-colors hover:text-neutral-900 dark:text-neutral-500 dark:hover:text-neutral-100"
             >
-              <Icon size={18} />
+              <Icon size={20} />
             </a>
           ))}
         </div>
