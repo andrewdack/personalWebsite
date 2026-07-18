@@ -1,6 +1,7 @@
 import { FiExternalLink, FiMapPin } from "react-icons/fi";
 import { FaLinkedinIn } from "react-icons/fa6";
 import { SiGithub, SiX, SiGmail } from "react-icons/si";
+import { NowPlaying } from "@/components/now-playing";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { site, work, projects, socials } from "@/data/site";
 
@@ -99,19 +100,22 @@ export default function Home() {
       </section>
 
       {/* Footer / socials */}
-      <footer className="mt-16 flex items-center gap-5 border-t border-neutral-200 pt-8 dark:border-neutral-800">
-        {socialLinks.map(({ label, href, Icon }) => (
-          <a
-            key={label}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={label}
-            className="text-neutral-400 transition-colors hover:text-neutral-900 dark:text-neutral-500 dark:hover:text-neutral-100"
-          >
-            <Icon size={18} />
-          </a>
-        ))}
+      <footer className="mt-16 flex items-center justify-between gap-6 border-t border-neutral-200 pt-8 dark:border-neutral-800">
+        <div className="flex items-center gap-5">
+          {socialLinks.map(({ label, href, Icon }) => (
+            <a
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={label}
+              className="text-neutral-400 transition-colors hover:text-neutral-900 dark:text-neutral-500 dark:hover:text-neutral-100"
+            >
+              <Icon size={18} />
+            </a>
+          ))}
+        </div>
+        <NowPlaying />
       </footer>
     </main>
   );
