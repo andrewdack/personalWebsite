@@ -19,9 +19,27 @@ const fraunces = Fraunces({
     subsets: ["latin"],
 });
 
+const siteUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "http://localhost:3000";
+
+const title = "Andrew Hu";
+const description = "Personal site of Andrew Hu — projects, work, and contact.";
+
 export const metadata: Metadata = {
-    title: "Andrew Hu",
-    description: "Personal site of Andrew Hu — projects, work, and contact.",
+    metadataBase: new URL(siteUrl),
+    title,
+    description,
+    openGraph: {
+        title,
+        description,
+        type: "website",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+    },
 };
 
 export default function RootLayout({
