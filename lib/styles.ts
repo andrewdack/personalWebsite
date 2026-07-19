@@ -11,3 +11,9 @@ export const iconLink =
 // now-playing, the color half of the theme toggle).
 export const linkHover =
     "text-neutral-500 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100";
+
+// Pill tooltip that fades/slides in above its trigger on hover. Requires
+// the trigger to be `group relative`; mark the tooltip element aria-hidden
+// (the trigger should carry the accessible name via aria-label).
+export const tooltip =
+    "pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-md bg-neutral-900 px-2 py-1 text-xs font-medium text-white opacity-0 transition-all ease-smooth group-hover:translate-y-0 group-hover:opacity-100 dark:bg-neutral-100 dark:text-neutral-900";

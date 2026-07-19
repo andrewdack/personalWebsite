@@ -1,11 +1,11 @@
-import { FiExternalLink, FiMapPin } from "react-icons/fi";
+import { FiArrowUpRight, FiMapPin } from "react-icons/fi";
 import { FaLinkedinIn } from "react-icons/fa6";
 import { IoMdMail } from "react-icons/io";
 import { SiGithub, SiLeetcode } from "react-icons/si";
 import { NowPlaying } from "@/components/now-playing";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { site, work, projects, socials } from "@/data/site";
-import { iconLink, linkHover } from "@/lib/styles";
+import { iconLink, linkHover, tooltip } from "@/lib/styles";
 import Clock from "@/components/clock";
 
 const sectionHeading =
@@ -62,10 +62,16 @@ export default function Home() {
                                 href={entry.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className={`group relative inline-block font-medium ${linkHover}`}
+                                className={`group inline-flex items-center gap-0.5 font-medium ${linkHover}`}
                             >
-                                {entry.company}
-                                <span className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-100 bg-neutral-300 transition-transform duration-300 ease-smooth group-hover:scale-x-0 dark:bg-neutral-600" />
+                                <span className="relative">
+                                    {entry.company}
+                                    <span className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-100 bg-neutral-300 transition-transform duration-300 ease-smooth group-hover:scale-x-0 dark:bg-neutral-600" />
+                                </span>
+                                <FiArrowUpRight
+                                    size={13}
+                                    className="opacity-0 transition-opacity duration-200 ease-smooth group-hover:opacity-100"
+                                />
                             </a>
                         </li>
                     ))}
@@ -103,7 +109,7 @@ export default function Home() {
                                         aria-label={`${project.title} live site`}
                                         className={iconLink}
                                     >
-                                        <FiExternalLink size={15} />
+                                        <FiArrowUpRight size={15} />
                                     </a>
                                 )}
                             </div>
@@ -125,9 +131,12 @@ export default function Home() {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={label}
-                            className={iconLink}
+                            className={`group relative ${iconLink}`}
                         >
                             <Icon size={size ?? 20} />
+                            <span aria-hidden className={tooltip}>
+                                {label}
+                            </span>
                         </a>
                     ))}
                 </div>

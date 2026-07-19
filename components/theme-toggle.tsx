@@ -20,9 +20,16 @@ export function ThemeToggle() {
             type="button"
             aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
             onClick={() => setTheme(isDark ? "light" : "dark")}
-            className={`flex size-10 items-center justify-center rounded-md ${linkHover} hover:bg-neutral-100 dark:hover:bg-neutral-800`}
+            className={`relative flex size-10 items-center justify-center rounded-md ${linkHover} hover:bg-neutral-100 dark:hover:bg-neutral-800`}
         >
-            {isDark ? <BsFillMoonStarsFill size={20} /> : <FiSun size={20} />}
+            <FiSun
+                size={20}
+                className="absolute rotate-0 scale-100 opacity-100 transition-all duration-500 ease-smooth dark:-rotate-180 dark:scale-0 dark:opacity-0"
+            />
+            <BsFillMoonStarsFill
+                size={20}
+                className="absolute rotate-180 scale-0 opacity-0 transition-all duration-500 ease-smooth dark:rotate-0 dark:scale-100 dark:opacity-100"
+            />
         </button>
     );
 }
