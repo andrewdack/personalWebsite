@@ -6,6 +6,17 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-serif: var(--font-fraunces);
+
+  /* Motion tokens — single source of truth for all transitions.
+     Every bare `transition-*` utility inherits these defaults, so
+     changing the site's feel means editing here, not each call site. */
+  --default-transition-duration: 200ms;
+  --default-transition-timing-function: var(--ease-out);
+
+  /* A named curve for deliberate, "designed" motion (e.g. the
+     underline swipe) — kept separate so it doesn't override the
+     built-in `ease-out`. Generates an `ease-smooth` utility. */
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 body {

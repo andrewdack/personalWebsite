@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { SiSpotify } from "react-icons/si";
+import { linkHover } from "@/lib/styles";
 
 type Track = {
     isPlaying: boolean;
@@ -60,7 +61,7 @@ export function NowPlaying() {
             href={track.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 text-[15px] text-neutral-500 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+            className={`flex items-center gap-2 text-[15px] ${linkHover}`}
         >
             <SiSpotify
                 size={15}

@@ -1,9 +1,10 @@
 "use client";
 
-import { FiMoon, FiSun } from "react-icons/fi";
+import { FiSun } from "react-icons/fi";
 import { BsFillMoonStarsFill } from "react-icons/bs";
 
 import { useTheme } from "@/components/theme-provider";
+import { linkHover } from "@/lib/styles";
 
 export function ThemeToggle() {
     const { theme, setTheme } = useTheme();
@@ -19,7 +20,7 @@ export function ThemeToggle() {
             type="button"
             aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
             onClick={() => setTheme(isDark ? "light" : "dark")}
-            className="flex size-10 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+            className={`flex size-10 items-center justify-center rounded-md ${linkHover} hover:bg-neutral-100 dark:hover:bg-neutral-800`}
         >
             {isDark ? <BsFillMoonStarsFill size={20} /> : <FiSun size={20} />}
         </button>

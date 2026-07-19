@@ -5,10 +5,9 @@ import { SiGithub, SiLeetcode } from "react-icons/si";
 import { NowPlaying } from "@/components/now-playing";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { site, work, projects, socials } from "@/data/site";
+import { iconLink, linkHover } from "@/lib/styles";
 import Clock from "@/components/clock";
 
-const iconLink =
-    "text-neutral-400 transition-colors hover:text-neutral-900 dark:text-neutral-500 dark:hover:text-neutral-100";
 const sectionHeading =
     "text-[15px] font-medium uppercase tracking-widest text-neutral-400 dark:text-neutral-500";
 
@@ -25,7 +24,7 @@ export default function Home() {
             {/* Header */}
             <header className="flex items-start justify-between">
                 <div>
-                    <h1 className="font-serif text-[28px] font-semibold tracking-tight">
+                    <h1 className="font-serif text-4xl font-semibold tracking-tight">
                         {site.name}
                     </h1>
                     <p className="mt-1.25 flex items-center gap-2 text-[15px] text-neutral-500 dark:text-neutral-400">
@@ -63,10 +62,10 @@ export default function Home() {
                                 href={entry.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="group relative inline-block font-medium text-neutral-500 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+                                className={`group relative inline-block font-medium ${linkHover}`}
                             >
                                 {entry.company}
-                                <span className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-100 bg-neutral-300 transition-transform duration-300 ease-out group-hover:scale-x-0 dark:bg-neutral-600" />
+                                <span className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-100 bg-neutral-300 transition-transform duration-300 ease-smooth group-hover:scale-x-0 dark:bg-neutral-600" />
                             </a>
                         </li>
                     ))}
