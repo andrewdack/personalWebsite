@@ -18,7 +18,7 @@ export const work: WorkEntry[] = [
     {
         role: "Software Engineering Intern",
         company: "Obscurity Labs",
-        url: "#",
+        url: "https://www.obscuritylabs.com",
     },
     {
         role: "Founding Organizer",
@@ -59,6 +59,6 @@ export const projects: Project[] = [
 export const socials = {
     github: "https://github.com/andrewdack",
     linkedin: "https://linkedin.com/in/andrew-j-hu-",
-    x: "#",
+    leetcode: "https://leetcode.com/u/hMLmonWJEa/",
     email: "mailto:andrewhu32009@gmail.com",
 };

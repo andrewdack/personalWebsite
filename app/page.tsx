@@ -1,6 +1,6 @@
 import { FiExternalLink, FiMapPin } from "react-icons/fi";
 import { FaLinkedinIn } from "react-icons/fa6";
-import { SiGithub, SiX, SiGmail } from "react-icons/si";
+import { SiGithub, SiLeetcode, SiGmail } from "react-icons/si";
 import { NowPlaying } from "@/components/now-playing";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { site, work, projects, socials } from "@/data/site";
@@ -14,7 +14,7 @@ const sectionHeading =
 const socialLinks = [
     { label: "GitHub", href: socials.github, Icon: SiGithub },
     { label: "LinkedIn", href: socials.linkedin, Icon: FaLinkedinIn },
-    { label: "X", href: socials.x, Icon: SiX },
+    { label: "LeetCode", href: socials.leetcode, Icon: SiLeetcode },
     { label: "Email", href: socials.email, Icon: SiGmail },
 ];
 
