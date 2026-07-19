@@ -68,11 +68,16 @@ export async function GET() {
         if (data.item && data.currently_playing_type === "track") {
             return NextResponse.json(toTrack(data.item, data.is_playing));
         }
+    } else if (nowRes.status !== 204) {
+        console.error(`Spotify currently-playing failed: ${nowRes.status}`);
     }
 
+    // Cache the recently-played lookup — it changes rarely and has a much
+    // stricter rate limit than currently-playing, so refetching it on every
+    // 60s poll risks tripping a multi-hour 429 ban for no benefit.
     const recentRes = await fetch(RECENTLY_PLAYED_URL, {
         headers: auth,
-        cache: "no-store",
+        next: { revalidate: 120 },
     });
     if (recentRes.ok) {
         const data = await recentRes.json();
@@ -80,6 +85,13 @@ export async function GET() {
         if (item) {
             return NextResponse.json(toTrack(item, false));
         }
+    } else {
+        console.error(
+            `Spotify recently-played failed: ${recentRes.status}` +
+                (recentRes.headers.get("retry-after")
+                    ? ` (retry-after ${recentRes.headers.get("retry-after")}s)`
+                    : ""),
+        );
     }
 
     return NextResponse.json({ configured: false });

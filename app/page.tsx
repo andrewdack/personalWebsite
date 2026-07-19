@@ -1,6 +1,7 @@
 import { FiExternalLink, FiMapPin } from "react-icons/fi";
 import { FaLinkedinIn } from "react-icons/fa6";
-import { SiGithub, SiLeetcode, SiGmail } from "react-icons/si";
+import { SiGithub, SiLeetcode } from "react-icons/si";
+import { PiEnvelopeSimpleFill } from "react-icons/pi";
 import { NowPlaying } from "@/components/now-playing";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { site, work, projects, socials } from "@/data/site";
@@ -15,7 +16,7 @@ const socialLinks = [
     { label: "GitHub", href: socials.github, Icon: SiGithub },
     { label: "LinkedIn", href: socials.linkedin, Icon: FaLinkedinIn },
     { label: "LeetCode", href: socials.leetcode, Icon: SiLeetcode },
-    { label: "Email", href: socials.email, Icon: SiGmail },
+    { label: "Email", href: socials.email, Icon: PiEnvelopeSimpleFill, size: 21 },
 ];
 
 export default function Home() {
@@ -117,7 +118,7 @@ export default function Home() {
             {/* Footer / socials */}
             <footer className="mt-[clamp(1rem,3.4vh,3.3125rem)] flex items-center justify-between gap-6.5 border-t border-neutral-200 pt-[clamp(0.75rem,2vh,2.25rem)] dark:border-neutral-800">
                 <div className="flex items-center gap-5.5">
-                    {socialLinks.map(({ label, href, Icon }) => (
+                    {socialLinks.map(({ label, href, Icon, size }) => (
                         <a
                             key={label}
                             href={href}
@@ -126,7 +127,7 @@ export default function Home() {
                             aria-label={label}
                             className={iconLink}
                         >
-                            <Icon size={20} />
+                            <Icon size={size ?? 20} />
                         </a>
                     ))}
                 </div>

@@ -2,8 +2,8 @@
 
 export const site = {
     name: "Andrew Hu",
-    location: "Chantilly",
-    bio: "Student, developer, and hackathon enthusiast building interesting stuff.",
+    location: "Chantilly, VA",
+    bio: "Student, developer, and hackathon enthusiast. Building interesting stuff.",
     interests:
         "I also like lifting (175lbs bench), volleyball, and piano.",
 };
@@ -60,5 +60,5 @@ export const socials = {
     github: "https://github.com/andrewdack",
     linkedin: "https://linkedin.com/in/andrew-j-hu-",
     leetcode: "https://leetcode.com/u/hMLmonWJEa/",
-    email: "mailto:andrewhu32009@gmail.com",
+    email: "mailto:andrew.dack.hu@gmail.com",
 };
