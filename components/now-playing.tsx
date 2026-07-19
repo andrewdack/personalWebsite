@@ -10,7 +10,7 @@ type Track = {
     url: string;
 };
 // delay in ms between each request to the spotify api
-const timeDelayMs = 10_000;
+const timeDelayMs = 30_000;
 const maxCharacters = 40; // the num of characters observed before it goes out
 function truncateText(text: string, maxLength: number) {
     if (text.length <= maxLength) return text;
@@ -49,8 +49,10 @@ export function NowPlaying() {
     // Unconfigured or errored: render nothing, the footer looks unchanged.
     if (!track) return null;
 
+    // Setting up the status string for spotify
     const playingStatus = track.isPlaying ? "Now playing:" : "Last played:";
     const trackArtistText = `${track.title} — ${track.artist}`;
+    // Truncate if necessary
     const truncatedTrackArtistText = truncateText(trackArtistText, maxCharacters);
 
     return (
