@@ -28,11 +28,16 @@ body {
    the site's motion instead of snapping instantly when `.dark` toggles.
    Elements with their own explicit transition utility (icon hovers, the
    theme-toggle spin, the underline swipe) are more specific and win over
-   this, so they're unaffected. */
-*,
-*::before,
-*::after {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-  transition-duration: var(--default-transition-duration);
-  transition-timing-function: var(--default-transition-timing-function);
+   this, so they're unaffected. Scoped inside @layer utilities — Tailwind's
+   own utilities live there too, and cascade layers ignore specificity
+   across layers, so an unlayered version of this rule would beat those
+   utilities outright regardless of which selector is more specific. */
+@layer utilities {
+  *,
+  *::before,
+  *::after {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-duration: var(--default-transition-duration);
+    transition-timing-function: var(--default-transition-timing-function);
+  }
 }
