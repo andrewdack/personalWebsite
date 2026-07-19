@@ -1,20 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
 import { FiMoon, FiSun } from "react-icons/fi";
+import { useTheme } from "@/components/theme-provider";
 
 export function ThemeToggle() {
-    const { resolvedTheme, setTheme } = useTheme();
-    const [mounted, setMounted] = useState(false);
+    const { theme, setTheme } = useTheme();
 
-    useEffect(() => setMounted(true), []);
-
-    if (!mounted) {
+    if (theme === null) {
         return <div className="size-10" />;
     }
 
-    const isDark = resolvedTheme === "dark";
+    const isDark = theme === "dark";
 
     return (
         <button

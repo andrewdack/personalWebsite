@@ -4,6 +4,7 @@ import { SiGithub, SiX, SiGmail } from "react-icons/si";
 import { NowPlaying } from "@/components/now-playing";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { site, work, projects, socials } from "@/data/site";
+import Clock from "@/components/clock";
 
 const iconLink =
     "text-neutral-400 transition-colors hover:text-neutral-900 dark:text-neutral-500 dark:hover:text-neutral-100";
@@ -28,7 +29,7 @@ export default function Home() {
                     </h1>
                     <p className="mt-1.25 flex items-center gap-2 text-[15px] text-neutral-500 dark:text-neutral-400">
                         <FiMapPin size={14} />
-                        {site.location}
+                        {site.location} — <Clock/>
                     </p>
                 </div>
                 <ThemeToggle />
