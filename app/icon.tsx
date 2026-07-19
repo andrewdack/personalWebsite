@@ -1,3 +1,9 @@
+// icon.tsx generates the standard favicon — the small icon
+//   shown in browser tabs, bookmarks, and history. Browsers
+//   request this at various sizes; Next serves whatever
+//   icon.tsx renders (currently 32×32) and wires up the
+//   <link rel="icon"> tag automatically.
+
 import { ImageResponse } from "next/og";
 import { loadGoogleFont } from "@/lib/google-font";
 
