@@ -4,8 +4,7 @@ export const site = {
     name: "Andrew Hu",
     location: "Chantilly, VA",
     bio: "Student, developer, and hackathon enthusiast. Building interesting stuff.",
-    interests:
-        "I also like lifting (175lbs bench), volleyball, and piano.",
+    interests: "I also like lifting (175lbs bench), volleyball, and piano.",
 };
 
 export type WorkEntry = {
