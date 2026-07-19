@@ -9,6 +9,14 @@ type Track = {
     artist: string;
     url: string;
 };
+// delay in ms between each request to the spotify api
+const timeDelayMs = 10_000;
+const maxCharacters = 45; // the num of characters observed before it goes out
+function truncateText(text: string, maxLength: number) {
+    if (text.length <= maxLength) return text;
+
+    return `${text.slice(0, maxLength - 1)}…`;
+}
 
 export function NowPlaying() {
     const [track, setTrack] = useState<Track | null>(null);
@@ -27,7 +35,7 @@ export function NowPlaying() {
         };
 
         load();
-        const interval = setInterval(load, 60_000);
+        const interval = setInterval(load, timeDelayMs);
         return () => {
             cancelled = true;
             clearInterval(interval);
@@ -36,6 +44,10 @@ export function NowPlaying() {
 
     // Unconfigured or errored: render nothing, the footer looks unchanged.
     if (!track) return null;
+
+    const playingStatus = track.isPlaying ? "Now playing:" : "Last played:";
+    const trackArtistText = `${track.title} — ${track.artist}`;
+    const truncatedTrackArtistText = truncateText(trackArtistText, maxCharacters);
 
     return (
         <a
@@ -49,26 +61,10 @@ export function NowPlaying() {
                 className={track.isPlaying ? "text-[#1DB954]" : ""}
             />
             <span className="truncate">
-                {track.isPlaying ? (
-                    <>
-                        {track.title}
-                        <span className="text-neutral-400 dark:text-neutral-500">
-                            {" "}
-                            — {track.artist}
-                        </span>
-                    </>
-                ) : (
-                    <>
-                        <span className="text-neutral-400 dark:text-neutral-500">
-                            Last played:{" "}
-                        </span>
-                        {track.title}
-                        <span className="text-neutral-400 dark:text-neutral-500">
-                            {" "}
-                            — {track.artist}
-                        </span>
-                    </>
-                )}
+                <span className="text-neutral-400 dark:text-neutral-500">
+                    {playingStatus}{" "}
+                </span>
+                {truncatedTrackArtistText}
             </span>
         </a>
     );
