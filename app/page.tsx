@@ -63,9 +63,10 @@ export default function Home() {
                                 href={entry.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="font-medium underline decoration-neutral-300 underline-offset-4 transition-colors hover:decoration-neutral-900 dark:decoration-neutral-600 dark:hover:decoration-neutral-100"
+                                className="group relative inline-block font-medium text-neutral-500 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
                             >
                                 {entry.company}
+                                <span className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-100 bg-neutral-300 transition-transform duration-300 ease-out group-hover:scale-x-0 dark:bg-neutral-600" />
                             </a>
                         </li>
                     ))}
