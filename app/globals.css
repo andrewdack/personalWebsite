@@ -22,3 +22,17 @@
 body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
+
+/* Smooths the light/dark switch itself — every element's color,
+   background, and border cross-fades on the same curve as the rest of
+   the site's motion instead of snapping instantly when `.dark` toggles.
+   Elements with their own explicit transition utility (icon hovers, the
+   theme-toggle spin, the underline swipe) are more specific and win over
+   this, so they're unaffected. */
+*,
+*::before,
+*::after {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-duration: var(--default-transition-duration);
+  transition-timing-function: var(--default-transition-timing-function);
+}
