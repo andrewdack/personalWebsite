@@ -28,9 +28,13 @@ export function NowPlaying() {
             try {
                 const res = await fetch("/api/spotify");
                 const data = await res.json();
-                if (!cancelled) setTrack(data.title ? data : null);
+                // Only overwrite state on an actual track. A failed/empty
+                // poll (rate-limited, nothing playing right now, network
+                // hiccup) leaves the last known-good track on screen
+                // instead of blanking out something that's still accurate.
+                if (!cancelled && data.title) setTrack(data);
             } catch {
-                if (!cancelled) setTrack(null);
+                // Same reasoning: ignore transient errors, keep last track.
             }
         };
 
