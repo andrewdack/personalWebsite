@@ -5,7 +5,7 @@ export const site = {
     location: "Chantilly",
     bio: "Student, developer, and hackathon enthusiast building interesting stuff.",
     interests:
-        "Outside of development: lifting (175lbs bench), volleyball, and piano.",
+        "I also like lifting (175lbs bench), volleyball, and piano.",
 };
 
 export type WorkEntry = {

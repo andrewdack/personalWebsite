@@ -5,6 +5,11 @@ import { NowPlaying } from "@/components/now-playing";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { site, work, projects, socials } from "@/data/site";
 
+const iconLink =
+    "text-neutral-400 transition-colors hover:text-neutral-900 dark:text-neutral-500 dark:hover:text-neutral-100";
+const sectionHeading =
+    "text-[15px] font-medium uppercase tracking-widest text-neutral-400 dark:text-neutral-500";
+
 const socialLinks = [
     { label: "GitHub", href: socials.github, Icon: SiGithub },
     { label: "LinkedIn", href: socials.linkedin, Icon: FaLinkedinIn },
@@ -14,14 +19,14 @@ const socialLinks = [
 
 export default function Home() {
     return (
-        <main className="mx-auto flex min-h-screen w-full max-w-[660px] flex-col px-[26px] py-[70px] sm:py-[106px]">
+        <main className="mx-auto flex min-h-screen max-w-165 flex-col px-6.5 py-17.5 sm:py-26.5">
             {/* Header */}
             <header className="flex items-start justify-between">
                 <div>
                     <h1 className="text-[26px] font-semibold tracking-tight">
                         {site.name}
                     </h1>
-                    <p className="mt-[5px] flex items-center gap-2 text-[15px] text-neutral-500 dark:text-neutral-400">
+                    <p className="mt-1.25 flex items-center gap-2 text-[15px] text-neutral-500 dark:text-neutral-400">
                         <FiMapPin size={14} />
                         {site.location}
                     </p>
@@ -37,12 +42,12 @@ export default function Home() {
                 </p>
             </section>
 
-            {/* Work */}
-            <section className="mt-[53px]">
-                <h2 className="text-[15px] font-medium uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
-                    Work
+            {/* Experience */}
+            <section className="mt-13.25">
+                <h2 className={sectionHeading}>
+                    Experience
                 </h2>
-                <ul className="mt-[18px] space-y-[13px]">
+                <ul className="mt-4.5 space-y-3.25">
                     {work.map((entry) => (
                         <li
                             key={entry.role + entry.company}
@@ -66,11 +71,11 @@ export default function Home() {
             </section>
 
             {/* Projects */}
-            <section className="mt-[53px]">
-                <h2 className="text-[15px] font-medium uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
+            <section className="mt-13.25">
+                <h2 className={sectionHeading}>
                     Projects
                 </h2>
-                <ul className="mt-[18px] space-y-[26px]">
+                <ul className="mt-4.5 space-y-6.5">
                     {projects.map((project) => (
                         <li key={project.title}>
                             <div className="flex items-center gap-3">
@@ -83,7 +88,7 @@ export default function Home() {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         aria-label={`${project.title} on GitHub`}
-                                        className="text-neutral-400 transition-colors hover:text-neutral-900 dark:text-neutral-500 dark:hover:text-neutral-100"
+                                        className={iconLink}
                                     >
                                         <SiGithub size={15} />
                                     </a>
@@ -94,13 +99,13 @@ export default function Home() {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         aria-label={`${project.title} live site`}
-                                        className="text-neutral-400 transition-colors hover:text-neutral-900 dark:text-neutral-500 dark:hover:text-neutral-100"
+                                        className={iconLink}
                                     >
                                         <FiExternalLink size={15} />
                                     </a>
                                 )}
                             </div>
-                            <p className="mt-[5px] text-[17px] leading-relaxed text-neutral-500 dark:text-neutral-400">
+                            <p className="mt-1.25 text-[17px] leading-relaxed text-neutral-500 dark:text-neutral-400">
                                 {project.description}
                             </p>
                         </li>
@@ -109,8 +114,8 @@ export default function Home() {
             </section>
 
             {/* Footer / socials */}
-            <footer className="mt-[70px] flex items-center justify-between gap-[26px] border-t border-neutral-200 pt-9 dark:border-neutral-800">
-                <div className="flex items-center gap-[22px]">
+            <footer className="mt-17.5 flex items-center justify-between gap-6.5 border-t border-neutral-200 pt-9 dark:border-neutral-800">
+                <div className="flex items-center gap-5.5">
                     {socialLinks.map(({ label, href, Icon }) => (
                         <a
                             key={label}
@@ -118,7 +123,7 @@ export default function Home() {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={label}
-                            className="text-neutral-400 transition-colors hover:text-neutral-900 dark:text-neutral-500 dark:hover:text-neutral-100"
+                            className={iconLink}
                         >
                             <Icon size={20} />
                         </a>

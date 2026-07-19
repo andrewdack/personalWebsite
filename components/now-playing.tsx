@@ -11,7 +11,7 @@ type Track = {
 };
 // delay in ms between each request to the spotify api
 const timeDelayMs = 10_000;
-const maxCharacters = 45; // the num of characters observed before it goes out
+const maxCharacters = 40; // the num of characters observed before it goes out
 function truncateText(text: string, maxLength: number) {
     if (text.length <= maxLength) return text;
 
@@ -54,11 +54,11 @@ export function NowPlaying() {
             href={track.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center gap-2 text-[15px] text-neutral-500 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+            className="flex items-center gap-2 text-[15px] text-neutral-500 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
         >
             <SiSpotify
                 size={15}
-                className={track.isPlaying ? "text-[#1DB954]" : ""}
+                className={track.isPlaying ? "text-[#1DB954]" : undefined}
             />
             <span className="truncate">
                 <span className="text-neutral-400 dark:text-neutral-500">
