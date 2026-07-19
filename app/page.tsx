@@ -20,11 +20,11 @@ const socialLinks = [
 
 export default function Home() {
     return (
-        <main className="mx-auto flex min-h-screen max-w-165 flex-col px-6.5 py-17.5 sm:py-26.5">
+        <main className="mx-auto flex h-dvh max-w-165 flex-col justify-center overflow-hidden px-6.5 py-[clamp(0.75rem,3vh,3rem)]">
             {/* Header */}
             <header className="flex items-start justify-between">
                 <div>
-                    <h1 className="text-[26px] font-semibold tracking-tight">
+                    <h1 className="font-serif text-[28px] font-semibold tracking-tight">
                         {site.name}
                     </h1>
                     <p className="mt-1.25 flex items-center gap-2 text-[15px] text-neutral-500 dark:text-neutral-400">
@@ -36,7 +36,7 @@ export default function Home() {
             </header>
 
             {/* Bio */}
-            <section className="mt-9 space-y-1 text-[17px] leading-relaxed">
+            <section className="mt-[clamp(0.75rem,2.6vh,2.25rem)] space-y-1 text-[17px] leading-relaxed">
                 <p>{site.bio}</p>
                 <p className="text-neutral-500 dark:text-neutral-400">
                     {site.interests}
@@ -44,11 +44,11 @@ export default function Home() {
             </section>
 
             {/* Experience */}
-            <section className="mt-13.25">
+            <section className="mt-[clamp(1rem,3.4vh,3.3125rem)]">
                 <h2 className={sectionHeading}>
                     Experience
                 </h2>
-                <ul className="mt-4.5 space-y-3.25">
+                <ul className="mt-[clamp(0.5rem,1.6vh,1.125rem)] space-y-[clamp(0.375rem,1vh,0.8125rem)]">
                     {work.map((entry) => (
                         <li
                             key={entry.role + entry.company}
@@ -72,11 +72,11 @@ export default function Home() {
             </section>
 
             {/* Projects */}
-            <section className="mt-13.25">
+            <section className="mt-[clamp(1rem,3.4vh,3.3125rem)]">
                 <h2 className={sectionHeading}>
                     Projects
                 </h2>
-                <ul className="mt-4.5 space-y-6.5">
+                <ul className="mt-[clamp(0.5rem,1.6vh,1.125rem)] space-y-[clamp(0.5rem,1.6vh,1.625rem)]">
                     {projects.map((project) => (
                         <li key={project.title}>
                             <div className="flex items-center gap-3">
@@ -115,7 +115,7 @@ export default function Home() {
             </section>
 
             {/* Footer / socials */}
-            <footer className="mt-17.5 flex items-center justify-between gap-6.5 border-t border-neutral-200 pt-9 dark:border-neutral-800">
+            <footer className="mt-[clamp(1rem,3.4vh,3.3125rem)] flex items-center justify-between gap-6.5 border-t border-neutral-200 pt-[clamp(0.75rem,2vh,2.25rem)] dark:border-neutral-800">
                 <div className="flex items-center gap-5.5">
                     {socialLinks.map(({ label, href, Icon }) => (
                         <a

@@ -19,7 +19,7 @@ export function ThemeToggle() {
             onClick={() => setTheme(isDark ? "light" : "dark")}
             className="flex size-10 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
         >
-            {isDark ? <FiSun size={20} /> : <FiMoon size={20} />}
+            {isDark ? <FiMoon size={20} /> : <FiSun size={20} />}
         </button>
     );
 }
