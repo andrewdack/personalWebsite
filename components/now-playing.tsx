@@ -8,6 +8,7 @@ import {
     useSyncExternalStore,
 } from "react";
 import { SiSpotify } from "react-icons/si";
+import { AudioVisualizer } from "@/components/audio-visualizer";
 import { linkHover } from "@/lib/styles";
 
 type Track = {
@@ -17,7 +18,7 @@ type Track = {
     url: string;
 };
 // Delay in ms between each request to the Spotify API
-const timeDelayMs = 10_000;
+const timeDelayMs = 30_000;
 // Marquee travel speed in px/s, and the share of the animation timeline
 // actually spent moving (the rest is the dwell at each end — see the
 // `marquee-shift` keyframes in globals.css). The timing function is a
@@ -42,9 +43,11 @@ const subscribeReducedMotion = (onChange: () => void) => {
 
 export function NowPlaying() {
     const [track, setTrack] = useState<Track | null>(null);
+    
     // How far the track text overflows its viewport, in px. 0 means it
     // fits and the marquee stays off.
     const [overflow, setOverflow] = useState(0);
+    
     // Reduced motion falls back to a static, ellipsised title. Read in JS
     // rather than via `motion-reduce:` because the animation is set inline
     // (the duration is per-track), and inline styles beat any utility class.
@@ -55,10 +58,10 @@ export function NowPlaying() {
     );
     const viewportRef = useRef<HTMLSpanElement>(null);
     const textRef = useRef<HTMLSpanElement>(null);
-
+    
     useEffect(() => {
         let cancelled = false;
-
+        
         const load = async () => {
             try {
                 const res = await fetch("/api/spotify");
@@ -72,7 +75,7 @@ export function NowPlaying() {
                 // Same reasoning: ignore transient errors, keep last track.
             }
         };
-
+        
         load();
         const interval = setInterval(load, timeDelayMs);
         return () => {
@@ -91,21 +94,22 @@ export function NowPlaying() {
         const available = viewport.getBoundingClientRect().width;
         setOverflow(Math.max(0, text.scrollWidth - available));
     }, []);
-
+    
     useEffect(() => {
         const viewport = viewportRef.current;
         const text = textRef.current;
         if (!viewport || !text) return;
-
+        
         measure();
         const observer = new ResizeObserver(measure);
         observer.observe(viewport);
         observer.observe(text);
         return () => observer.disconnect();
     }, [measure, track]);
-
+    
     // Unconfigured or errored: render nothing, the footer looks unchanged.
     if (!track) return null;
+    // ---------------------------------------------------------------------------------------------
 
     // Setting up the status string for spotify
     const playingStatus = track.isPlaying ? "Now playing:" : "Last played:";
@@ -134,35 +138,51 @@ export function NowPlaying() {
                 <span className="shrink-0 whitespace-pre text-neutral-400 dark:text-neutral-500">
                     {playingStatus}{" "}
                 </span>
-                {/* maxMarqueeChar is the knob for how far left a long title
-                    may push the footer: the visible window never exceeds it,
-                    and anything past it becomes marquee travel instead. Set
-                    as an inline style, not a `max-w-[…]` class — Tailwind
+                {/* Positioning context for the visualizer. It has to be this
+                    wrapper rather than the viewport itself: the viewport is
+                    `overflow-hidden` (that's what clips the marquee), so a
+                    child positioned below it would be clipped away.
+
+                    maxMarqueeChar lives here and is the knob for how far left
+                    a long title may push the footer: the window never exceeds
+                    it, and anything past it becomes marquee travel instead.
+                    Set as an inline style, not a `max-w-[…]` class — Tailwind
                     only generates rules for class strings it can find in the
                     source, so an interpolated one would compile to nothing. */}
                 <span
-                    ref={viewportRef}
-                    className="min-w-0 overflow-hidden"
+                    className="relative min-w-0"
                     style={{ maxWidth: `${maxMarqueeChar}ch` }}
                 >
-                    <span
-                        ref={textRef}
-                        className={
-                            reducedMotion
-                                ? "block truncate"
-                                : "block w-max whitespace-nowrap"
-                        }
-                        style={
-                            !reducedMotion && overflow > 0
-                                ? {
-                                      ["--marquee-distance" as string]: `${overflow}px`,
-                                      animation: `marquee-shift ${marqueeDurationSec}s cubic-bezier(0.2, 0, 0.8, 1) infinite`,
-                                  }
-                                : undefined
-                        }
-                    >
-                        {trackArtistText}
+                    <span ref={viewportRef} className="block overflow-hidden">
+                        <span
+                            ref={textRef}
+                            className={
+                                reducedMotion
+                                    ? "block truncate"
+                                    : "block w-max whitespace-nowrap"
+                            }
+                            style={
+                                !reducedMotion && overflow > 0
+                                    ? {
+                                          ["--marquee-distance" as string]: `${overflow}px`,
+                                          animation: `marquee-shift ${marqueeDurationSec}s cubic-bezier(0.2, 0, 0.8, 1) infinite`,
+                                      }
+                                    : undefined
+                            }
+                        >
+                            {trackArtistText}
+                        </span>
                     </span>
+                    {/* `top-full` puts it directly under the marquee and
+                        `w-full` matches its width exactly, both derived from
+                        the wrapper rather than duplicated. Absolute, so it
+                        contributes no height and the footer cannot shift —
+                        it also can't widen the wrapper, since out-of-flow
+                        boxes don't participate in shrink-to-fit sizing. */}
+                    <AudioVisualizer
+                        isPlaying={track.isPlaying}
+                        className="absolute top-full left-0 w-full"
+                    />
                 </span>
             </span>
         </a>
