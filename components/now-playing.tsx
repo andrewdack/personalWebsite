@@ -108,7 +108,9 @@ export function NowPlaying() {
     }, [measure, track]);
     
     // Unconfigured or errored: render nothing, the footer looks unchanged.
-    if (!track) return null;
+    if (!track) {
+        return null;
+    }
     // ---------------------------------------------------------------------------------------------
 
     // Setting up the status string for spotify
@@ -181,6 +183,7 @@ export function NowPlaying() {
                         boxes don't participate in shrink-to-fit sizing. */}
                     <AudioVisualizer
                         isPlaying={track.isPlaying}
+                        reducedMotion={reducedMotion}
                         className="absolute top-full left-0 w-full"
                     />
                 </span>
