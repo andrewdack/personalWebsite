@@ -1,7 +1,7 @@
 import { FiArrowUpRight, FiMapPin } from "react-icons/fi";
 import { FaLinkedinIn } from "react-icons/fa6";
 import { IoMdMail } from "react-icons/io";
-import { SiGithub, SiLeetcode } from "react-icons/si";
+import { SiGithub, SiInstagram, SiLeetcode } from "react-icons/si";
 import { NowPlaying } from "@/components/now-playing";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { site, work, projects, socials } from "@/data/site";
@@ -14,8 +14,9 @@ const sectionHeading =
 const socialLinks = [
     { label: "GitHub", href: socials.github, Icon: SiGithub },
     { label: "LinkedIn", href: socials.linkedin, Icon: FaLinkedinIn },
+    { label: "Instagram", href: socials.instagram, Icon: SiInstagram},
     { label: "LeetCode", href: socials.leetcode, Icon: SiLeetcode },
-    { label: "Email", href: socials.email, Icon: IoMdMail, size: 21 },
+    { label: "Send an email!", href: socials.email, Icon: IoMdMail, size: 21 },
 ];
 
 export default function Home() {

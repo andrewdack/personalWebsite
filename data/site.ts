@@ -58,6 +58,7 @@ export const projects: Project[] = [
 export const socials = {
     github: "https://github.com/andrewdack",
     linkedin: "https://linkedin.com/in/andrew-j-hu-",
+    instagram: "https://www.instagram.com/andrewjhu_/",
     leetcode: "https://leetcode.com/u/hMLmonWJEa/",
     email: "mailto:andrew.dack.hu@gmail.com",
 };
