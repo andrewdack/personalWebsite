@@ -38,6 +38,14 @@ const maxMarqueeChar = 26;
 // before hitting its dwell, which reads as a jittery twitch rather than a
 // real scroll.
 const minMarqueeOverflowPx = 20;
+// Crossfade duration for both the first appearance (this loads later than
+// the rest of the page, off the Spotify API) and any later status change.
+// Kept in one place since the swap-after-fade-out timeout below has to
+// match the CSS transition it's timed against.
+const fadeMs = 300;
+// Identity for "is this a different status" — a poll returning the same
+// track shouldn't retrigger the crossfade, only an actual change should.
+const trackKey = (t: Track) => `${t.title}|${t.artist}|${t.isPlaying}|${t.url}`;
 
 const reducedMotionQuery = () =>
     window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -49,7 +57,16 @@ const subscribeReducedMotion = (onChange: () => void) => {
 
 export function NowPlaying() {
     const [track, setTrack] = useState<Track | null>(null);
-    
+
+    // What's actually on screen, separate from the latest poll result —
+    // holding this back lets a status change fade the old text out before
+    // swapping to the new one, instead of the content changing mid-fade.
+    const [displayed, setDisplayed] = useState<Track | null>(null);
+    // Drives the crossfade. Starts false so the very first appearance (this
+    // loads later than the rest of the page, off the Spotify API) fades in
+    // too instead of popping in once the fetch resolves.
+    const [visible, setVisible] = useState(false);
+
     // How far the track text overflows its viewport, in px. 0 means it
     // fits and the marquee stays off.
     const [overflow, setOverflow] = useState(0);
@@ -90,6 +107,44 @@ export function NowPlaying() {
         };
     }, []);
 
+    // Swap what's displayed only after fading the previous content out —
+    // skips straight to showing it on first appearance, since there's
+    // nothing on screen yet to fade out from.
+    useEffect(() => {
+        if (!track) return;
+        if (!displayed || trackKey(track) !== trackKey(displayed)) {
+            if (!displayed) {
+                // Synchronous setState in a callback, not a direct call —
+                // avoids the react-hooks/set-state-in-effect lint error.
+                const show = () => setDisplayed(track);
+                show();
+                return;
+            }
+            const hide = () => setVisible(false);
+            hide();
+            const timeout = setTimeout(() => setDisplayed(track), fadeMs);
+            return () => clearTimeout(timeout);
+        }
+    }, [track, displayed]);
+
+    // Fade in whenever there's something to show — first appearance, or a
+    // swap that just landed after fading the old content out. Needs a full
+    // extra frame after the opacity-0 render commits, not just one rAF: the
+    // first rAF still lands before the browser has painted that commit, so
+    // flipping to visible there collapses into the same frame and the
+    // "transition" jumps straight to its end state instead of animating.
+    useEffect(() => {
+        if (!displayed) return;
+        let raf2 = 0;
+        const raf1 = requestAnimationFrame(() => {
+            raf2 = requestAnimationFrame(() => setVisible(true));
+        });
+        return () => {
+            cancelAnimationFrame(raf1);
+            cancelAnimationFrame(raf2);
+        };
+    }, [displayed]);
+
     // Re-measure whenever the track changes or the footer resizes — the
     // available width depends on the viewport, so a title that fits on a
     // wide window can overflow on a narrow one and vice versa.
@@ -111,16 +166,16 @@ export function NowPlaying() {
         observer.observe(viewport);
         observer.observe(text);
         return () => observer.disconnect();
-    }, [measure, track]);
-    
+    }, [measure, displayed]);
+
     // Unconfigured or errored: render nothing, the footer looks unchanged.
-    if (!track) {
+    if (!displayed) {
         return null;
     }
 
     // Setting up the status string for spotify
-    const playingStatus = track.isPlaying ? "Now playing:" : "Last played:";
-    const trackArtistText = `${track.title} — ${track.artist}`;
+    const playingStatus = displayed.isPlaying ? "Now playing:" : "Last played:";
+    const trackArtistText = `${displayed.title} — ${displayed.artist}`;
 
     // Marquee timing. The dwell at each end is a fixed number of *seconds*
     // (not a fraction of the run), so the pause keyframes land at different
@@ -145,69 +200,79 @@ export function NowPlaying() {
     }`;
 
     return (
-        <a
-            href={track.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            title={trackArtistText}
-            className={`flex min-w-0 items-center gap-2 text-[15px] ${linkHover}`}
+        // Fade/rise lives on this wrapper rather than the `<a>` itself: both
+        // this and `linkHover`'s `transition-colors` set the `transition-property`
+        // CSS property, and Tailwind's generated utilities don't merge that
+        // property across classes — whichever rule lands later in the compiled
+        // stylesheet wins outright, clobbering the other. Two elements, two
+        // non-conflicting transitions.
+        <span
+            className={`block min-w-0 transition-[opacity,transform] duration-300 ease-smooth ${visible ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"}`}
         >
-            <SiSpotify
-                size={15}
-                className={`shrink-0 ${track.isPlaying ? "text-[#1DB954]" : "text-neutral-400 dark:text-neutral-500"}`}
-            />
-            {/* Own flex row so the label and title stay a single space apart
-                rather than picking up the anchor's icon gap. The label holds
-                its full width and only the title shrinks, so the marquee is
-                always the title — never "Now playing:". */}
-            <span className="flex min-w-0 items-center">
-                <span className="shrink-0 whitespace-pre text-neutral-400 dark:text-neutral-500">
-                    {playingStatus}{" "}
-                </span>
-                {/* Positioning context for the visualizer. It has to be this
-                    wrapper rather than the viewport itself: the viewport is
-                    `overflow-hidden` (that's what clips the marquee), so a
-                    child positioned below it would be clipped away.
+            <a
+                href={displayed.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={trackArtistText}
+                className={`flex min-w-0 items-center gap-2 text-[15px] ${linkHover}`}
+            >
+                <SiSpotify
+                    size={15}
+                    className={`shrink-0 ${displayed.isPlaying ? "text-[#1DB954]" : "text-neutral-400 dark:text-neutral-500"}`}
+                />
+                {/* Own flex row so the label and title stay a single space apart
+                    rather than picking up the anchor's icon gap. The label holds
+                    its full width and only the title shrinks, so the marquee is
+                    always the title — never "Now playing:". */}
+                <span className="flex min-w-0 items-center">
+                    <span className="shrink-0 whitespace-pre text-neutral-400 dark:text-neutral-500">
+                        {playingStatus}{" "}
+                    </span>
+                    {/* Positioning context for the visualizer. It has to be this
+                        wrapper rather than the viewport itself: the viewport is
+                        `overflow-hidden` (that's what clips the marquee), so a
+                        child positioned below it would be clipped away.
 
-                    maxMarqueeChar lives here and is the knob for how far left
-                    a long title may push the footer: the window never exceeds
-                    it, and anything past it becomes marquee travel instead.
-                    Set as an inline style, not a `max-w-[…]` class — Tailwind
-                    only generates rules for class strings it can find in the
-                    source, so an interpolated one would compile to nothing. */}
-                <span
-                    className="relative min-w-0"
-                    style={{ maxWidth: `${maxMarqueeChar}ch` }}
-                >
-                    {marqueeAnimate && (
-                        <style dangerouslySetInnerHTML={{ __html: marqueeKeyframes }} />
-                    )}
-                    <AudioVisualizer
-                        isPlaying={track.isPlaying}
-                        reducedMotion={reducedMotion}
-                        className="absolute bottom-full left-0 w-full"
-                    />
-                    <span ref={viewportRef} className="block overflow-hidden">
-                        <span
-                            ref={textRef}
-                            className={
-                                staticTruncate
-                                    ? "block truncate"
-                                    : "block w-max whitespace-nowrap"
-                            }
-                            style={
-                                marqueeAnimate
-                                    ? {
-                                          animation: `${marqueeName} ${totalSec}s ${marqueeEasing} infinite`,
-                                      }
-                                    : undefined
-                            }
-                        >
-                            {trackArtistText}
+                        maxMarqueeChar lives here and is the knob for how far left
+                        a long title may push the footer: the window never exceeds
+                        it, and anything past it becomes marquee travel instead.
+                        Set as an inline style, not a `max-w-[…]` class — Tailwind
+                        only generates rules for class strings it can find in the
+                        source, so an interpolated one would compile to nothing. */}
+                    <span
+                        className="relative min-w-0"
+                        style={{ maxWidth: `${maxMarqueeChar}ch` }}
+                    >
+                        {marqueeAnimate && (
+                            <style dangerouslySetInnerHTML={{ __html: marqueeKeyframes }} />
+                        )}
+                        <AudioVisualizer
+                            isPlaying={displayed.isPlaying}
+                            reducedMotion={reducedMotion}
+                            className="absolute bottom-full left-0 w-full"
+                        />
+                        <span ref={viewportRef} className="block overflow-hidden">
+                            <span
+                                ref={textRef}
+                                className={
+                                    staticTruncate
+                                        ? "block truncate"
+                                        : "block w-max whitespace-nowrap"
+                                }
+                                style={
+                                    marqueeAnimate
+                                        ? {
+                                              animation: `${marqueeName} ${totalSec}s ${marqueeEasing} infinite`,
+                                          }
+                                        : undefined
+                                }
+                            >
+                                {trackArtistText}
+                            </span>
                         </span>
                     </span>
                 </span>
-            </span>
-        </a>
+            </a>
+        </span>
     );
 }
