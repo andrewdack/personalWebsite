@@ -25,7 +25,7 @@ export default function Home() {
             {/* Header */}
             <header className="flex items-start justify-between">
                 <div>
-                    <h1 className="font-serif text-4xl font-semibold tracking-tight">
+                    <h1 className="font-serif text-4xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                         {site.name}
                     </h1>
                     <p className="mt-1.25 flex items-center gap-2 text-[15px] text-neutral-500 dark:text-neutral-400">
@@ -38,7 +38,7 @@ export default function Home() {
 
             {/* Bio */}
             <section className="mt-[clamp(0.75rem,2.6vh,2.25rem)] space-y-1 text-[17px] leading-relaxed">
-                <p>{site.bio}</p>
+                <p className="text-neutral-900 dark:text-neutral-100">{site.bio}</p>
                 <p className="text-neutral-500 dark:text-neutral-400">
                     {site.interests}
                 </p>
@@ -53,7 +53,7 @@ export default function Home() {
                     {work.map((entry) => (
                         <li
                             key={entry.role + entry.company}
-                            className="text-[17px]"
+                            className="text-[17px] text-neutral-900 dark:text-neutral-100"
                         >
                             {entry.role}{" "}
                             <span className="text-neutral-400 dark:text-neutral-500">
@@ -88,7 +88,7 @@ export default function Home() {
                     {projects.map((project) => (
                         <li key={project.title}>
                             <div className="flex items-center gap-3">
-                                <h3 className="text-[17px] font-medium">
+                                <h3 className="text-[17px] font-medium text-neutral-900 dark:text-neutral-100">
                                     {project.title}
                                 </h3>
                                 {project.github && (

@@ -23,27 +23,6 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
-/* Now-playing marquee — slides an overflowing track title left far enough
-   to reveal its tail, then back, pausing at both ends so each half is
-   readable. The distance is per-track (it's exactly how much the text
-   overflows its viewport), so `now-playing.tsx` measures it and hands it
-   over as --marquee-distance along with a duration scaled to keep the
-   travel speed constant regardless of how long the title is. The moving
-   phases cover 76% of the timeline; the rest is the two dwells. */
-@keyframes marquee-shift {
-  0%,
-  12% {
-    transform: translateX(0);
-  }
-  50%,
-  62% {
-    transform: translateX(calc(-1 * var(--marquee-distance)));
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
 /* Smooths the light/dark switch itself — every element's color,
    background, and border cross-fades on the same curve as the rest of
    the site's motion instead of snapping instantly when `.dark` toggles.

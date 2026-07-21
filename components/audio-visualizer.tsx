@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Perlin } from "@/lib/perlin";
 
 type AudioVisualizerProps = {
@@ -22,46 +22,68 @@ type AudioVisualizerProps = {
     className?: string;
 };
 
-// Shape profile for the fake spectrum. These values define the overall
-// silhouette so the bars don't all feel interchangeable.
-const sample = [
-    0.03, 0.03, 0.03, 0.04, 0.07, 0.23, 0.18, 0.5, 0.85, 1, 0.78, 0.7,
-    0.5, 0.3, 0.12, 0.07, 0.23, 0.5, 0.58, 0.4, 0.2, 0.13, 0.05, 0.15,
-    0.2, 0.15, 0.12, 0.08, 0.05, 0.04, 0.03, 0.03, 0.04, 0.03, 0.03,
-];
-
-// Number of bars to render. Kept here rather than as a prop — it's a
-// property of the visualizer's look, not something the caller varies.
-const barCount = sample.length;
+const barWidthPx = 4;
+const barGapPx = 2;
 const updateIntervalMs = 125;
 const minBarScale = 0.08;
 const maxBarScale = 1;
+
+// How many fixed-width bars (each needing a gap on one side, except the
+// last) fit in `width` px: n·bar + (n−1)·gap ≤ width  ⇒  n ≤ (width+gap)/(bar+gap).
+function barsThatFit(width: number) {
+    return Math.max(
+        0,
+        Math.floor((width + barGapPx) / (barWidthPx + barGapPx)),
+    );
+}
 
 export function AudioVisualizer({
     isPlaying,
     reducedMotion = false,
     className,
 }: AudioVisualizerProps) {
-    const [levels, setLevels] = useState<number[]>(() =>
-        Array.from({ length: barCount }, (_, index) => 0.15 + (index % 5) * 0.1),
-    );
+    const rowRef = useRef<HTMLDivElement>(null);
+    const [barCount, setBarCount] = useState(0);
+    const [levels, setLevels] = useState<number[]>([]);
 
+    // Derive the bar count from the row's measured width and re-derive on
+    // resize, so shrinking the window (or a shorter title widening the
+    // marquee) refills the row instead of leaving a gap or overflowing.
     useEffect(() => {
-        if (!isPlaying || reducedMotion) {
-            setLevels(sample.map((value) => Math.max(minBarScale, value)));
-            return;
-        }
+        const row = rowRef.current;
+        if (!row) return;
 
+        const measure = () =>
+            setBarCount(barsThatFit(row.getBoundingClientRect().width));
+
+        measure();
+        const observer = new ResizeObserver(measure);
+        observer.observe(row);
+        return () => observer.disconnect();
+    }, []);
+
+    // Change the underlaying base on an interval to bunch up audio spots
+    
+    useEffect(() => {
+        if (barCount === 0 || !isPlaying || reducedMotion) return;
+
+        // Per-bar silhouette so the bars don't all feel interchangeable.
+        // Regenerated whenever the count changes.
+        const base = Array.from(
+            { length: barCount },
+            () => Math.random() * 0.7,
+        );
         const noise = new Perlin();
         let tick = 0;
 
         const update = () => {
             tick += 1;
             setLevels(
-                sample.map((baseValue, index) => {
-                    const noiseValue = (noise.getNoiseValue(index * 0.1 + tick * 0.03) + 1) / 2;
-                    const randomValue = Math.random();
-                    const value = noiseValue * randomValue * baseValue;
+                base.map((baseValue, index) => {
+                    const noiseValue =
+                        (noise.getNoiseValue(index * 0.1 + tick * 0.03) + 1) /
+                        2;
+                    const value = noiseValue * Math.random() * baseValue;
                     return Math.max(minBarScale, Math.min(maxBarScale, value));
                 }),
             );
@@ -70,16 +92,26 @@ export function AudioVisualizer({
         update();
         const interval = window.setInterval(update, updateIntervalMs);
         return () => window.clearInterval(interval);
-    }, [isPlaying, reducedMotion]);
+    }, [barCount]);
+
+    // Nothing to show unless a track is actively playing. Placed after the
+    // hooks — an early return above them changes the hook count between
+    // renders (isPlaying flips when a track stops), which crashes React.
+    if (!isPlaying || reducedMotion) return null;
 
     return (
         <div aria-hidden data-playing={isPlaying} className={className}>
-            <div className="flex h-8 items-end gap-[2px] overflow-visible">
+            {/* `justify-between` spreads bars edge-to-edge so the row fills its full width exactly. */}
+            <div
+                ref={rowRef}
+                className="flex h-8 items-end justify-between overflow-visible"
+            >
                 {levels.map((level, index) => (
                     <span
                         key={index}
-                        className="w-[4px] origin-bottom rounded-full bg-[#345] transition-transform duration-[125ms] ease-linear dark:bg-[#9cc4ff]"
+                        className="origin-bottom rounded-full bg-[#345] transition-transform duration-125 ease-linear dark:bg-[#9cc4ff]"
                         style={{
+                            width: `${barWidthPx}px`,
                             height: "100%",
                             transform: `scale3d(1, ${level}, 1)`,
                         }}

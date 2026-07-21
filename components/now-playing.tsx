@@ -19,17 +19,18 @@ type Track = {
 };
 // Delay in ms between each request to the Spotify API
 const timeDelayMs = 30_000;
-// Marquee travel speed in px/s, and the share of the animation timeline
-// actually spent moving (the rest is the dwell at each end — see the
-// `marquee-shift` keyframes in globals.css). The timing function is a
-// near-linear bezier — a brief ramp at each end, constant speed through
-// the bulk — so this is the average; it peaks about 25% higher. Full
-// `ease-in-out` crawled into each dwell and rushed the middle, which read
-// as cheap; `linear` fixed that but started and stopped dead.
-const marqueeSpeedPxPerSec = 30;
-// Should not be changed: This must equal the share of the keyframe timeline
-// spent moving, or the px/s above stops being accurate.
-const marqueeMovingFraction = 0.76;
+// Marquee travel speed in px/s. Near-linear bezier eases each end — a brief
+// ramp, constant speed through the bulk — so this is the average; it peaks
+// about 25% higher. Full `ease-in-out` crawled into each dwell and rushed the
+// middle, which read as cheap; `linear` fixed that but started/stopped dead.
+const marqueeSpeedPxPerSec = 15;
+// Pause at each end, in *seconds* — an absolute time, not a fraction of the
+// run. A fraction made the pause scale with distance, so a title only just
+// past the boundary (tiny travel, tiny total) barely paused before turning
+// back; a fixed dwell reads the same however far the text has to go.
+const marqueeDwellSec = 2.6;
+const marqueeEasing = "cubic-bezier(0.2, 0, 0.8, 1)";
+const marqueeName = "now-playing-marquee";
 // Number of characters to limit the maximum window of the marquee by
 const maxMarqueeChar = 26;
 
@@ -111,14 +112,29 @@ export function NowPlaying() {
     if (!track) {
         return null;
     }
-    // ---------------------------------------------------------------------------------------------
 
     // Setting up the status string for spotify
     const playingStatus = track.isPlaying ? "Now playing:" : "Last played:";
     const trackArtistText = `${track.title} — ${track.artist}`;
-    // Round-trip at a constant speed, stretched to account for the dwells.
-    const marqueeDurationSec =
-        (2 * overflow) / marqueeSpeedPxPerSec / marqueeMovingFraction;
+
+    // Marquee timing. The dwell at each end is a fixed number of *seconds*
+    // (not a fraction of the run), so the pause keyframes land at different
+    // percentages for every track: percent = time / total. @keyframes
+    // selectors can't take variables, so the rule is generated per-track and
+    // injected below — a plain CSS animation, which composites the same way
+    // the old fixed-percentage one did, so the motion stays as smooth.
+    const marqueeAnimate = !reducedMotion && overflow > 0;
+    const travelSec = overflow / marqueeSpeedPxPerSec;
+    const totalSec = 2 * marqueeDwellSec + 2 * travelSec;
+    const pct = (seconds: number) => `${((seconds / totalSec) * 100).toFixed(3)}%`;
+    // Dwell holds flat at each end; the two travel legs carry the easing.
+    const marqueeKeyframes = `@keyframes ${marqueeName} {
+        0%, ${pct(marqueeDwellSec)} { transform: translateX(0); }
+        ${pct(marqueeDwellSec + travelSec)}, ${pct(2 * marqueeDwellSec + travelSec)} {
+            transform: translateX(-${overflow}px);
+        }
+        100% { transform: translateX(0); }
+    }`;
 
     return (
         <a
@@ -155,6 +171,14 @@ export function NowPlaying() {
                     className="relative min-w-0"
                     style={{ maxWidth: `${maxMarqueeChar}ch` }}
                 >
+                    {marqueeAnimate && (
+                        <style dangerouslySetInnerHTML={{ __html: marqueeKeyframes }} />
+                    )}
+                    <AudioVisualizer
+                        isPlaying={track.isPlaying}
+                        reducedMotion={reducedMotion}
+                        className="absolute bottom-full left-0 w-full"
+                    />
                     <span ref={viewportRef} className="block overflow-hidden">
                         <span
                             ref={textRef}
@@ -164,10 +188,9 @@ export function NowPlaying() {
                                     : "block w-max whitespace-nowrap"
                             }
                             style={
-                                !reducedMotion && overflow > 0
+                                marqueeAnimate
                                     ? {
-                                          ["--marquee-distance" as string]: `${overflow}px`,
-                                          animation: `marquee-shift ${marqueeDurationSec}s cubic-bezier(0.2, 0, 0.8, 1) infinite`,
+                                          animation: `${marqueeName} ${totalSec}s ${marqueeEasing} infinite`,
                                       }
                                     : undefined
                             }
@@ -175,17 +198,6 @@ export function NowPlaying() {
                             {trackArtistText}
                         </span>
                     </span>
-                    {/* `top-full` puts it directly under the marquee and
-                        `w-full` matches its width exactly, both derived from
-                        the wrapper rather than duplicated. Absolute, so it
-                        contributes no height and the footer cannot shift —
-                        it also can't widen the wrapper, since out-of-flow
-                        boxes don't participate in shrink-to-fit sizing. */}
-                    <AudioVisualizer
-                        isPlaying={track.isPlaying}
-                        reducedMotion={reducedMotion}
-                        className="absolute top-full left-0 w-full"
-                    />
                 </span>
             </span>
         </a>
