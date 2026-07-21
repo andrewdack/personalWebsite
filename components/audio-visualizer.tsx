@@ -50,6 +50,12 @@ export function AudioVisualizer({
     // Derive the bar count from the row's measured width and re-derive on
     // resize, so shrinking the window (or a shorter title widening the
     // marquee) refills the row instead of leaving a gap or overflowing.
+    // Keyed to the same condition that gates the row's existence below: the
+    // row unmounts whenever playback stops, and a stale observer left
+    // attached to that detached node reports a width of 0 (zeroing barCount
+    // for good, since nothing then reattaches it once the row remounts).
+    // Re-running this effect on that same transition tears down the old
+    // observer and binds a fresh one to the new row each time it (re)mounts.
     useEffect(() => {
         const row = rowRef.current;
         if (!row) return;
@@ -61,7 +67,7 @@ export function AudioVisualizer({
         const observer = new ResizeObserver(measure);
         observer.observe(row);
         return () => observer.disconnect();
-    }, []);
+    }, [isPlaying, reducedMotion]);
 
     // Change the underlaying base on an interval to switch up pattern
     useEffect(() => {
