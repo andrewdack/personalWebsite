@@ -29,6 +29,14 @@
   from {
     opacity: 0;
     transform: translateY(14px) scale(0.98);
+    filter: blur(2px);
+  }
+  /* Blur is a separate keyframe track from opacity/transform above, so it
+     clears on its own timing — real motion blur is tied to speed, sharpest
+     at the start of the move and gone well before it settles, not lingering
+     for the whole transition. */
+  20% {
+    filter: blur(0);
   }
   to {
     opacity: 1;
