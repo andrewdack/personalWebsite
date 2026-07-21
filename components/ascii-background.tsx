@@ -24,8 +24,8 @@ const CELL_W = 10; // px advance between columns
 const CELL_H = 15; // px advance between rows
 const FPS_CAP = 30; // the motion is slow; 30fps looks identical and saves battery
 const NUM_BUCKETS = 24; // opacity levels — cells are batched by level to cut draw-state changes
-const PEAK_LIGHT = 0.11; // max glyph opacity, light mode
-const PEAK_DARK = 0.12; // ...dark mode: kept low, light glyphs on near-black read hot fast
+const PEAK_LIGHT = 0.07; // max glyph opacity, light mode
+const PEAK_DARK = 0.08; // ...dark mode: kept low, light glyphs on near-black read hot fast
 // Lifts the dim end of the wave off zero so the field is a gentle low-contrast
 // swell (crest ≈ 2.5× trough) rather than bright bands on a near-empty field.
 const WAVE_FLOOR = 0.4;
