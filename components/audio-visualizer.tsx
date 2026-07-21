@@ -104,7 +104,7 @@ export function AudioVisualizer({
         update();
         const interval = window.setInterval(update, updateIntervalMs);
         return () => window.clearInterval(interval);
-    }, [base, barCount]);
+    }, [base, barCount, isPlaying, reducedMotion]);
 
     // Nothing to show unless a track is actively playing. Placed after the
     // hooks — an early return above them changes the hook count between
