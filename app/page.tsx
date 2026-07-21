@@ -20,13 +20,9 @@ const socialLinks = [
 ];
 
 export default function Home() {
-    // Continuous per-line stagger for the page-load entrance — each line
-    // gets `cascade()`'s next delay in top-to-bottom source order (JS
-    // evaluates .map() callbacks in order too, so the work/project lists
-    // fall in line automatically), reading as one flowing reveal instead
-    // of a handful of section-sized chunks arriving all at once.
-    const cascadeStepMs = 45;
-    let cascadeStep = 0;
+    // Continuous per-line stagger for the page-load entrance
+    const cascadeStepMs = 75; // gap between each piece cascading in
+    let cascadeStep = 3;
     const cascade = () => ({ animationDelay: `${cascadeStep++ * cascadeStepMs}ms` });
 
     return (
