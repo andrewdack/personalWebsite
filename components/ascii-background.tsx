@@ -24,11 +24,13 @@ const CELL_W = 10; // px advance between columns
 const CELL_H = 15; // px advance between rows
 const FPS_CAP = 30; // the motion is slow; 30fps looks identical and saves battery
 const NUM_BUCKETS = 24; // opacity levels — cells are batched by level to cut draw-state changes
-const PEAK_LIGHT = 0.07; // max glyph opacity, light mode
-const PEAK_DARK = 0.08; // ...dark mode: kept low, light glyphs on near-black read hot fast
-// Lifts the dim end of the wave off zero so the field is a gentle low-contrast
-// swell (crest ≈ 2.5× trough) rather than bright bands on a near-empty field.
-const WAVE_FLOOR = 0.4;
+const PEAK_LIGHT = 0.05; // max glyph opacity, light mode
+const PEAK_DARK = 0.03; // ...dark mode: kept low, light glyphs on near-black read hot fast
+// Contrast curve. The normalized wave value is raised to this power, so
+// troughs collapse toward transparent and only the crests surface — the
+// higher the exponent, the more of the field stays empty and the sharper the
+// visible bands read against the gaps.
+const WAVE_GAMMA = 3.2;
 const MONO_FONT = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
 
 // Three sine waves at different angles and speeds. Summed and normalized they
@@ -158,9 +160,10 @@ export function AsciiBackground() {
                             cosCol[i][c] * sinRow[i][r];
                     }
                     v = (v * inv + 1) * 0.5; // [-1,1] -> [0,1]
-                    // Compress toward the top of the range: a gentle swell
-                    // across the whole field instead of sparse bright crests.
-                    v = WAVE_FLOOR + (1 - WAVE_FLOOR) * v;
+                    // Gamma the wave so troughs fall to (near-)transparent and
+                    // only the crests surface — high contrast between the faint
+                    // visible bands and the empty gaps between them.
+                    v = v ** WAVE_GAMMA;
                     const level = (v * NUM_BUCKETS) | 0;
                     if (level <= 0) continue;
                     buckets[level >= NUM_BUCKETS ? NUM_BUCKETS - 1 : level].push(
