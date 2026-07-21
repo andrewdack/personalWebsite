@@ -33,6 +33,11 @@ const marqueeEasing = "cubic-bezier(0.2, 0, 0.8, 1)";
 const marqueeName = "now-playing-marquee";
 // Number of characters to limit the maximum window of the marquee by
 const maxMarqueeChar = 26;
+// Below this much overflow, in px, skip the marquee and just truncate with
+// an ellipsis instead — a track only a hair past the viewport barely travels
+// before hitting its dwell, which reads as a jittery twitch rather than a
+// real scroll.
+const minMarqueeOverflowPx = 20;
 
 const reducedMotionQuery = () =>
     window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -123,7 +128,10 @@ export function NowPlaying() {
     // selectors can't take variables, so the rule is generated per-track and
     // injected below — a plain CSS animation, which composites the same way
     // the old fixed-percentage one did, so the motion stays as smooth.
-    const marqueeAnimate = !reducedMotion && overflow > 0;
+    const marqueeAnimate = !reducedMotion && overflow > minMarqueeOverflowPx;
+    // Overflowing but not enough to bother animating — still needs an
+    // ellipsis rather than a hard clip.
+    const staticTruncate = reducedMotion || (overflow > 0 && !marqueeAnimate);
     const travelSec = overflow / marqueeSpeedPxPerSec;
     const totalSec = 2 * marqueeDwellSec + 2 * travelSec;
     const pct = (seconds: number) => `${((seconds / totalSec) * 100).toFixed(3)}%`;
@@ -183,7 +191,7 @@ export function NowPlaying() {
                         <span
                             ref={textRef}
                             className={
-                                reducedMotion
+                                staticTruncate
                                     ? "block truncate"
                                     : "block w-max whitespace-nowrap"
                             }

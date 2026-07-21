@@ -45,6 +45,7 @@ export function AudioVisualizer({
     const rowRef = useRef<HTMLDivElement>(null);
     const [barCount, setBarCount] = useState(0);
     const [levels, setLevels] = useState<number[]>([]);
+    const [base, setBase] = useState<number[]>([]);
 
     // Derive the bar count from the row's measured width and re-derive on
     // resize, so shrinking the window (or a shorter title widening the
@@ -62,17 +63,28 @@ export function AudioVisualizer({
         return () => observer.disconnect();
     }, []);
 
-    // Change the underlaying base on an interval to bunch up audio spots
-    
+    // Change the underlaying base on an interval to switch up pattern
+    useEffect(() => {
+        // Get a scale factor for the base in the range of (0.5, 0.8)
+        const scaleFactor = Math.random() * (0.8 - 0.5) + 0.5;
+
+        // We have to put synchronous setState in a callback to avoid extra render lint error
+        const sample = () => 
+            setBase(Array.from({ length: barCount }, () => Math.random() * scaleFactor));
+        sample()
+
+        const interval = setInterval(() => {
+            setBase(Array.from({ length: barCount }, () => Math.random() * scaleFactor));
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, [barCount]); // Need the barCount dependency so that base isn't being set from stale zero barCount
+
     useEffect(() => {
         if (barCount === 0 || !isPlaying || reducedMotion) return;
 
         // Per-bar silhouette so the bars don't all feel interchangeable.
         // Regenerated whenever the count changes.
-        const base = Array.from(
-            { length: barCount },
-            () => Math.random() * 0.7,
-        );
         const noise = new Perlin();
         let tick = 0;
 
@@ -92,7 +104,7 @@ export function AudioVisualizer({
         update();
         const interval = window.setInterval(update, updateIntervalMs);
         return () => window.clearInterval(interval);
-    }, [barCount]);
+    }, [base, barCount]);
 
     // Nothing to show unless a track is actively playing. Placed after the
     // hooks — an early return above them changes the hook count between
