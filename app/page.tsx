@@ -21,7 +21,7 @@ const socialLinks = [
 
 export default function Home() {
     return (
-        <main className="mx-auto flex h-dvh max-w-165 flex-col justify-center overflow-hidden px-6.5 py-[clamp(0.75rem,3vh,3rem)]">
+        <main className="mx-auto flex min-h-dvh max-w-165 flex-col justify-center px-6.5 py-[clamp(0.75rem,3vh,3rem)]">
             {/* Header */}
             <header className="flex items-start justify-between">
                 <div>
@@ -122,8 +122,10 @@ export default function Home() {
                 </ul>
             </section>
 
-            {/* Footer / socials */}
-            <footer className="mt-[clamp(1rem,3.4vh,3.3125rem)] flex items-center justify-between gap-6.5 border-t border-neutral-200 pt-[clamp(0.75rem,2vh,2.25rem)] dark:border-neutral-800">
+            {/* Footer / socials — stacks on phones so the now-playing marquee
+                gets full width (side-by-side squeezes it to nothing); returns
+                to a single row at sm and up. */}
+            <footer className="mt-[clamp(1rem,3.4vh,3.3125rem)] flex flex-col items-start gap-4 border-t border-neutral-200 pt-[clamp(0.75rem,2vh,2.25rem)] sm:flex-row sm:items-center sm:justify-between sm:gap-6.5 dark:border-neutral-800">
                 <div className="flex items-center gap-5.5">
                     {socialLinks.map(({ label, href, Icon, size }) => (
                         <a
@@ -141,7 +143,9 @@ export default function Home() {
                         </a>
                     ))}
                 </div>
-                <NowPlaying />
+                <div className="w-full sm:w-auto">
+                    <NowPlaying />
+                </div>
             </footer>
         </main>
     );
