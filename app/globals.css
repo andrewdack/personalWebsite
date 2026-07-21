@@ -17,6 +17,31 @@
      underline swipe) — kept separate so it doesn't override the
      built-in `ease-out`. Generates an `ease-smooth` utility. */
   --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* The page-load entrance for each top-level section — generates the
+     `animate-fade-in-up` utility. `both` holds the "from" state before
+     the animation starts (so a staggered section isn't visible at full
+     opacity before its delay elapses) and the "to" state after it ends. */
+  --animate-fade-in-up: fade-in-up 700ms var(--ease-smooth) both;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Staggered entrances read as motion sickness to anyone who's asked the
+   OS to reduce it — skip straight to the settled state. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up {
+    animation: none;
+  }
 }
 
 body {
