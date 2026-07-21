@@ -12,17 +12,20 @@ import { useEffect, useRef } from "react";
 // keeps it — only the opacity animates, so it reads as light washing over a
 // fixed field of characters rather than a churn of random symbols.
 
-// Deliberately code-punctuation, no 0/1: binary digits read as "hacker
-// cliché" and, tiled, as visual noise. These look like source at a glance.
-const GLYPHS = "{}()[]<>/\\|=+-*;:.,~^?!".split("");
+// A mix of letters, digits and weighty symbols — reads like a hex dump /
+// source scroll. Deliberately excludes wispy glyphs (. , * ; : ~ ^ ' | - _)
+// that leave holes in the texture, and isn't just 0/1 (binary tiled is a
+// cliché and looks like noise).
+const GLYPHS =
+    "ABCDEFGHKMNPRSTXZabcdehkmnrstxz0123456789#%&$@=+<>?/\\{}[]()".split("");
 
-const FONT_SIZE = 14; // px
-const CELL_W = 14; // px advance between columns
-const CELL_H = 22; // px advance between rows
+const FONT_SIZE = 13; // px
+const CELL_W = 10; // px advance between columns
+const CELL_H = 15; // px advance between rows
 const FPS_CAP = 30; // the motion is slow; 30fps looks identical and saves battery
 const NUM_BUCKETS = 24; // opacity levels — cells are batched by level to cut draw-state changes
-const PEAK_LIGHT = 0.12; // max glyph opacity, light mode
-const PEAK_DARK = 0.17; // ...dark mode needs a touch more to read against near-black
+const PEAK_LIGHT = 0.11; // max glyph opacity, light mode
+const PEAK_DARK = 0.12; // ...dark mode: kept low, light glyphs on near-black read hot fast
 // Lifts the dim end of the wave off zero so the field is a gentle low-contrast
 // swell (crest ≈ 2.5× trough) rather than bright bands on a near-empty field.
 const WAVE_FLOOR = 0.4;
