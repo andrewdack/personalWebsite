@@ -20,10 +20,19 @@ const socialLinks = [
 ];
 
 export default function Home() {
+    // Continuous per-line stagger for the page-load entrance — each line
+    // gets `cascade()`'s next delay in top-to-bottom source order (JS
+    // evaluates .map() callbacks in order too, so the work/project lists
+    // fall in line automatically), reading as one flowing reveal instead
+    // of a handful of section-sized chunks arriving all at once.
+    const cascadeStepMs = 45;
+    let cascadeStep = 0;
+    const cascade = () => ({ animationDelay: `${cascadeStep++ * cascadeStepMs}ms` });
+
     return (
         <main className="mx-auto flex min-h-dvh max-w-165 flex-col justify-center px-6.5 py-[clamp(0.75rem,3vh,3rem)]">
             {/* Header */}
-            <header className="animate-fade-in-up flex items-start justify-between">
+            <header className="animate-fade-in-up flex items-start justify-between" style={cascade()}>
                 <div>
                     <h1 className="font-serif text-4xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                         {site.name}
@@ -39,23 +48,26 @@ export default function Home() {
             </header>
 
             {/* Bio */}
-            <section className="animate-fade-in-up mt-[clamp(0.75rem,2.6vh,2.25rem)] space-y-1 text-[17px] leading-relaxed [animation-delay:140ms]">
-                <p className="text-neutral-900 dark:text-neutral-100">{site.bio}</p>
-                <p className="text-neutral-500 dark:text-neutral-400">
+            <section className="mt-[clamp(0.75rem,2.6vh,2.25rem)] space-y-1 text-[17px] leading-relaxed">
+                <p className="animate-fade-in-up text-neutral-900 dark:text-neutral-100" style={cascade()}>
+                    {site.bio}
+                </p>
+                <p className="animate-fade-in-up text-neutral-500 dark:text-neutral-400" style={cascade()}>
                     {site.interests}
                 </p>
             </section>
 
             {/* Experience */}
-            <section className="animate-fade-in-up mt-[clamp(1rem,3.4vh,3.3125rem)] [animation-delay:260ms]">
-                <h2 className={sectionHeading}>
+            <section className="mt-[clamp(1rem,3.4vh,3.3125rem)]">
+                <h2 className={`animate-fade-in-up ${sectionHeading}`} style={cascade()}>
                     Experience
                 </h2>
                 <ul className="mt-[clamp(0.5rem,1.6vh,1.125rem)] space-y-[clamp(0.375rem,1vh,0.8125rem)]">
                     {work.map((entry) => (
                         <li
                             key={entry.role + entry.company}
-                            className="text-[17px] text-neutral-900 dark:text-neutral-100"
+                            className="animate-fade-in-up text-[17px] text-neutral-900 dark:text-neutral-100"
+                            style={cascade()}
                         >
                             {entry.role}{" "}
                             <span className="text-neutral-400 dark:text-neutral-500">
@@ -82,13 +94,17 @@ export default function Home() {
             </section>
 
             {/* Projects */}
-            <section className="animate-fade-in-up mt-[clamp(1rem,3.4vh,3.3125rem)] [animation-delay:380ms]">
-                <h2 className={sectionHeading}>
+            <section className="mt-[clamp(1rem,3.4vh,3.3125rem)]">
+                <h2 className={`animate-fade-in-up ${sectionHeading}`} style={cascade()}>
                     Projects
                 </h2>
                 <ul className="mt-[clamp(0.5rem,1.6vh,1.125rem)] space-y-[clamp(0.5rem,1.6vh,1.625rem)]">
                     {projects.map((project) => (
-                        <li key={project.title}>
+                        <li
+                            key={project.title}
+                            className="animate-fade-in-up"
+                            style={cascade()}
+                        >
                             <div className="flex items-center gap-3">
                                 <h3 className="text-[17px] font-medium text-neutral-900 dark:text-neutral-100">
                                     {project.title}
@@ -127,8 +143,8 @@ export default function Home() {
             {/* Footer / socials — stacks on phones so the now-playing marquee
                 gets full width (side-by-side squeezes it to nothing); returns
                 to a single row at sm and up. */}
-            <footer className="animate-fade-in-up mt-[clamp(1rem,3.4vh,3.3125rem)] flex flex-col items-start gap-4 border-t border-neutral-200 pt-[clamp(0.75rem,2vh,2.25rem)] [animation-delay:500ms] sm:flex-row sm:items-center sm:justify-between sm:gap-6.5 dark:border-neutral-800">
-                <div className="flex items-center gap-5.5">
+            <footer className="mt-[clamp(1rem,3.4vh,3.3125rem)] flex flex-col items-start gap-4 border-t border-neutral-200 pt-[clamp(0.75rem,2vh,2.25rem)] sm:flex-row sm:items-center sm:justify-between sm:gap-6.5 dark:border-neutral-800">
+                <div className="animate-fade-in-up flex items-center gap-5.5" style={cascade()}>
                     {socialLinks.map(({ label, href, Icon, size }) => (
                         <a
                             key={label}
@@ -145,7 +161,7 @@ export default function Home() {
                         </a>
                     ))}
                 </div>
-                <div className="w-full sm:w-auto">
+                <div className="animate-fade-in-up w-full sm:w-auto" style={cascade()}>
                     <NowPlaying />
                 </div>
             </footer>
