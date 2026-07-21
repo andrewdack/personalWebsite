@@ -2,11 +2,13 @@
 
 import { useEffect, useRef } from "react";
 
-// Full-viewport field of monospace glyphs whose opacity rolls in slow waves,
-// like a faint terminal breathing behind the page. Rendered to a <canvas>
-// rather than the DOM: a full-screen grid is thousands of cells, far too many
-// for individual elements, and canvas lets every cell's opacity update per
-// frame cheaply.
+// Full-viewport field of monospace glyphs whose opacity is driven by 3D
+// Perlin noise (x, y sampled across the grid, z advanced by time), so faint
+// blobs of text surface and dissolve in organic, directionless positions
+// rather than the regular diagonal bands a sum of sine waves produces.
+// Rendered to a <canvas> rather than the DOM: a full-screen grid is thousands
+// of cells, far too many for individual elements, and canvas lets every cell's
+// opacity update per frame cheaply.
 //
 // Each cell is assigned one glyph once (a stable hash of its coordinates) and
 // keeps it — only the opacity animates, so it reads as light washing over a
@@ -24,27 +26,92 @@ const CELL_W = 10; // px advance between columns
 const CELL_H = 15; // px advance between rows
 const FPS_CAP = 30; // the motion is slow; 30fps looks identical and saves battery
 const NUM_BUCKETS = 24; // opacity levels — cells are batched by level to cut draw-state changes
-const PEAK_LIGHT = 0.05; // max glyph opacity, light mode
-const PEAK_DARK = 0.03; // ...dark mode: kept low, light glyphs on near-black read hot fast
-// Contrast curve. The normalized wave value is raised to this power, so
-// troughs collapse toward transparent and only the crests surface — the
-// higher the exponent, the more of the field stays empty and the sharper the
-// visible bands read against the gaps.
-const WAVE_GAMMA = 3.2;
+const PEAK_LIGHT = 0.09; // max glyph opacity, light mode
+const PEAK_DARK = 0.06; // ...dark mode: kept low, light glyphs on near-black read hot fast
+// Contrast curve. The normalized noise value is raised to this power, so
+// troughs collapse toward transparent and only the peaks surface — the higher
+// the exponent, the more of the field stays empty and the sharper the visible
+// blobs read against the gaps.
+const CONTRAST_GAMMA = 3.2;
+// Noise sampling. SCALE sets blob size (smaller = larger, smoother blobs);
+// Z_SPEED is how fast they morph in place; DRIFT gives the whole field a very
+// slow non-axis-aligned wander so it feels alive without an obvious direction.
+const NOISE_SCALE = 0.045;
+const NOISE_Z_SPEED = 0.1;
+const NOISE_DRIFT_X = 0.01;
+const NOISE_DRIFT_Y = 0.006;
 const MONO_FONT = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
-
-// Three sine waves at different angles and speeds. Summed and normalized they
-// make an organic, non-repeating swell that drifts diagonally across the grid
-// instead of a single obviously-periodic ripple. Higher ax/ay coefficients =
-// shorter spatial period = bands packed tighter together.
-const WAVES = [
-    { ax: 0.25, ay: 0.14, speed: 0.9 },
-    { ax: -0.13, ay: 0.23, speed: 0.6 },
-    { ax: 0.08, ay: -0.1, speed: 0.4 },
-];
 
 const darkRGB: [number, number, number] = [245, 245, 245];
 const lightRGB: [number, number, number] = [23, 23, 23];
+
+// Classic Perlin 3D noise, output ~[-1, 1]. Self-contained (the repo's
+// lib/perlin.ts is 1D only). A fresh random permutation per mount just means a
+// different-looking field each load, which is fine for decoration.
+function makeNoise3D() {
+    const perm = new Uint8Array(256);
+    for (let i = 0; i < 256; i++) perm[i] = i;
+    for (let i = 255; i > 0; i--) {
+        const j = (Math.random() * (i + 1)) | 0;
+        const tmp = perm[i];
+        perm[i] = perm[j];
+        perm[j] = tmp;
+    }
+    const p = new Uint8Array(512);
+    for (let i = 0; i < 512; i++) p[i] = perm[i & 255];
+
+    const fade = (t: number) => t * t * t * (t * (t * 6 - 15) + 10);
+    const lerp = (a: number, b: number, t: number) => a + t * (b - a);
+    const grad = (hash: number, x: number, y: number, z: number) => {
+        const h = hash & 15;
+        const u = h < 8 ? x : y;
+        const v = h < 4 ? y : h === 12 || h === 14 ? x : z;
+        return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v);
+    };
+
+    return (x: number, y: number, z: number) => {
+        const xi = Math.floor(x) & 255;
+        const yi = Math.floor(y) & 255;
+        const zi = Math.floor(z) & 255;
+        const xf = x - Math.floor(x);
+        const yf = y - Math.floor(y);
+        const zf = z - Math.floor(z);
+        const u = fade(xf);
+        const v = fade(yf);
+        const w = fade(zf);
+        const a = p[xi] + yi;
+        const aa = p[a] + zi;
+        const ab = p[a + 1] + zi;
+        const b = p[xi + 1] + yi;
+        const ba = p[b] + zi;
+        const bb = p[b + 1] + zi;
+        return lerp(
+            lerp(
+                lerp(grad(p[aa], xf, yf, zf), grad(p[ba], xf - 1, yf, zf), u),
+                lerp(
+                    grad(p[ab], xf, yf - 1, zf),
+                    grad(p[bb], xf - 1, yf - 1, zf),
+                    u,
+                ),
+                v,
+            ),
+            lerp(
+                lerp(
+                    grad(p[aa + 1], xf, yf, zf - 1),
+                    grad(p[ba + 1], xf - 1, yf, zf - 1),
+                    u,
+                ),
+                lerp(
+                    grad(p[ab + 1], xf, yf - 1, zf - 1),
+                    grad(p[bb + 1], xf - 1, yf - 1, zf - 1),
+                    u,
+                ),
+                v,
+            ),
+            w,
+        );
+    };
+}
 
 export function AsciiBackground() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -59,22 +126,13 @@ export function AsciiBackground() {
             "(prefers-reduced-motion: reduce)",
         ).matches;
 
+        const noise = makeNoise3D();
+
         let cols = 0;
         let rows = 0;
         let cssW = 0;
         let cssH = 0;
         let glyphs: string[] = [];
-
-        // Per-wave, per-row sin/cos — depend only on the row, so computed once
-        // per layout and reused every frame.
-        const sinRow = WAVES.map<number[]>(() => []);
-        const cosRow = WAVES.map<number[]>(() => []);
-        // Per-wave, per-column sin/cos — carry the time phase, recomputed each
-        // frame. Precomputing these makes the wave value at each cell a couple
-        // of multiply-adds (angle-addition identity) with no per-cell trig, so
-        // the inner loop over every cell stays cheap.
-        const sinCol = WAVES.map<number[]>(() => []);
-        const cosCol = WAVES.map<number[]>(() => []);
         const buckets = Array.from<unknown, number[]>(
             { length: NUM_BUCKETS },
             () => [],
@@ -109,18 +167,6 @@ export function AsciiBackground() {
                     glyphs[r * cols + c] = GLYPHS[hash % GLYPHS.length];
                 }
             }
-
-            for (let i = 0; i < WAVES.length; i++) {
-                const { ay } = WAVES[i];
-                sinRow[i] = new Array(rows);
-                cosRow[i] = new Array(rows);
-                for (let r = 0; r < rows; r++) {
-                    sinRow[i][r] = Math.sin(r * ay);
-                    cosRow[i][r] = Math.cos(r * ay);
-                }
-                sinCol[i] = new Array(cols);
-                cosCol[i] = new Array(cols);
-            }
         };
 
         const render = (nowMs: number) => {
@@ -129,41 +175,34 @@ export function AsciiBackground() {
             const tgt = targetRGB();
             for (let i = 0; i < 3; i++) color[i] += (tgt[i] - color[i]) * 0.08;
 
-            // Fold each wave's time drift into its per-column phase.
-            for (let i = 0; i < WAVES.length; i++) {
-                const { ax, speed } = WAVES[i];
-                const phase = t * speed;
-                const sc = sinCol[i];
-                const cc = cosCol[i];
-                for (let c = 0; c < cols; c++) {
-                    const a = c * ax + phase;
-                    sc[c] = Math.sin(a);
-                    cc[c] = Math.cos(a);
-                }
-            }
-
-            // A slow global breathe on top of the local waves, so overall
+            // A slow global breathe on top of the local blobs, so overall
             // intensity swells and recedes too.
             const breathe = 0.7 + 0.3 * Math.sin(t * 0.3);
             const peak = (isDark() ? PEAK_DARK : PEAK_LIGHT) * breathe;
 
+            const z = t * NOISE_Z_SPEED;
+            const driftX = t * NOISE_DRIFT_X;
+            const driftY = t * NOISE_DRIFT_Y;
+
             for (let b = 0; b < NUM_BUCKETS; b++) buckets[b].length = 0;
 
-            const inv = 1 / WAVES.length;
             for (let r = 0; r < rows; r++) {
+                const ny = r * NOISE_SCALE + driftY;
+                const ny2 = r * NOISE_SCALE * 2 + driftY;
                 for (let c = 0; c < cols; c++) {
-                    let v = 0;
-                    for (let i = 0; i < WAVES.length; i++) {
-                        // sin(colAngle + rowAngle) via the angle-addition identity.
-                        v +=
-                            sinCol[i][c] * cosRow[i][r] +
-                            cosCol[i][c] * sinRow[i][r];
-                    }
-                    v = (v * inv + 1) * 0.5; // [-1,1] -> [0,1]
-                    // Gamma the wave so troughs fall to (near-)transparent and
-                    // only the crests surface — high contrast between the faint
-                    // visible bands and the empty gaps between them.
-                    v = v ** WAVE_GAMMA;
+                    const nx = c * NOISE_SCALE + driftX;
+                    // Two octaves: a base blob plus finer detail so the shapes
+                    // don't read as smooth uniform gradients.
+                    let v =
+                        noise(nx, ny, z) +
+                        0.5 * noise(nx * 2, ny2, z * 1.6 + 31.4);
+                    v *= 1 / 1.5; // back to ~[-1,1]
+                    v = (v + 1) * 0.5; // -> [0,1]
+                    if (v < 0) v = 0;
+                    else if (v > 1) v = 1;
+                    // Gamma so troughs fall to (near-)transparent and only the
+                    // peaks surface — faint blobs against empty gaps.
+                    v = v ** CONTRAST_GAMMA;
                     const level = (v * NUM_BUCKETS) | 0;
                     if (level <= 0) continue;
                     buckets[level >= NUM_BUCKETS ? NUM_BUCKETS - 1 : level].push(
