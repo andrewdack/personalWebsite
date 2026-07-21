@@ -136,29 +136,38 @@ export default function Home() {
                 </ul>
             </section>
 
-            {/* Footer / socials — stacks on phones so the now-playing marquee
-                gets full width (side-by-side squeezes it to nothing); returns
-                to a single row at sm and up. */}
-            <footer className="mt-[clamp(1rem,3.4vh,3.3125rem)] flex flex-col items-start gap-4 border-t border-neutral-200 pt-[clamp(0.75rem,2vh,2.25rem)] sm:flex-row sm:items-center sm:justify-between sm:gap-6.5 dark:border-neutral-800">
-                <div className="animate-fade-in-up flex items-center gap-5.5" style={cascade()}>
-                    {socialLinks.map(({ label, href, Icon, size }) => (
-                        <a
-                            key={label}
-                            href={href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={label}
-                            className={`group relative ${iconLink}`}
-                        >
-                            <Icon size={size ?? 20} />
-                            <span aria-hidden className={tooltip}>
-                                {label}
-                            </span>
-                        </a>
-                    ))}
-                </div>
-                <div className="animate-fade-in-up w-full sm:w-auto" style={cascade()}>
-                    <NowPlaying />
+            {/* Footer / socials — the divider is its own element rather than
+                a border on the footer box, so it can take a cascade step
+                of its own instead of appearing instantly with the rest of
+                the footer's static box. Stacks on phones so the now-playing
+                marquee gets full width (side-by-side squeezes it to
+                nothing); returns to a single row at sm and up. */}
+            <footer className="mt-[clamp(1rem,3.4vh,3.3125rem)]">
+                <div
+                    className="animate-fade-in-up h-px bg-neutral-200 dark:bg-neutral-800"
+                    style={cascade()}
+                />
+                <div className="flex flex-col items-start gap-4 pt-[clamp(0.75rem,2vh,2.25rem)] sm:flex-row sm:items-center sm:justify-between sm:gap-6.5">
+                    <div className="animate-fade-in-up flex items-center gap-5.5" style={cascade()}>
+                        {socialLinks.map(({ label, href, Icon, size }) => (
+                            <a
+                                key={label}
+                                href={href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={label}
+                                className={`group relative ${iconLink}`}
+                            >
+                                <Icon size={size ?? 20} />
+                                <span aria-hidden className={tooltip}>
+                                    {label}
+                                </span>
+                            </a>
+                        ))}
+                    </div>
+                    <div className="animate-fade-in-up w-full sm:w-auto" style={cascade()}>
+                        <NowPlaying />
+                    </div>
                 </div>
             </footer>
         </main>
