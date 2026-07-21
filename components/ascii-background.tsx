@@ -21,17 +21,21 @@ const CELL_W = 14; // px advance between columns
 const CELL_H = 22; // px advance between rows
 const FPS_CAP = 30; // the motion is slow; 30fps looks identical and saves battery
 const NUM_BUCKETS = 24; // opacity levels — cells are batched by level to cut draw-state changes
-const PEAK_LIGHT = 0.16; // max glyph opacity, light mode
-const PEAK_DARK = 0.22; // ...dark mode needs a touch more to read against near-black
+const PEAK_LIGHT = 0.12; // max glyph opacity, light mode
+const PEAK_DARK = 0.17; // ...dark mode needs a touch more to read against near-black
+// Lifts the dim end of the wave off zero so the field is a gentle low-contrast
+// swell (crest ≈ 2.5× trough) rather than bright bands on a near-empty field.
+const WAVE_FLOOR = 0.4;
 const MONO_FONT = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
 
 // Three sine waves at different angles and speeds. Summed and normalized they
 // make an organic, non-repeating swell that drifts diagonally across the grid
-// instead of a single obviously-periodic ripple.
+// instead of a single obviously-periodic ripple. Higher ax/ay coefficients =
+// shorter spatial period = bands packed tighter together.
 const WAVES = [
-    { ax: 0.16, ay: 0.09, speed: 0.9 },
-    { ax: -0.08, ay: 0.15, speed: 0.6 },
-    { ax: 0.05, ay: -0.06, speed: 0.4 },
+    { ax: 0.25, ay: 0.14, speed: 0.9 },
+    { ax: -0.13, ay: 0.23, speed: 0.6 },
+    { ax: 0.08, ay: -0.1, speed: 0.4 },
 ];
 
 const darkRGB: [number, number, number] = [245, 245, 245];
@@ -151,7 +155,9 @@ export function AsciiBackground() {
                             cosCol[i][c] * sinRow[i][r];
                     }
                     v = (v * inv + 1) * 0.5; // [-1,1] -> [0,1]
-                    v = v * v; // gamma: keep most of the field faint, let crests brighten
+                    // Compress toward the top of the range: a gentle swell
+                    // across the whole field instead of sparse bright crests.
+                    v = WAVE_FLOOR + (1 - WAVE_FLOOR) * v;
                     const level = (v * NUM_BUCKETS) | 0;
                     if (level <= 0) continue;
                     buckets[level >= NUM_BUCKETS ? NUM_BUCKETS - 1 : level].push(
