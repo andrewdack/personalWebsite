@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Fraunces, Hanken_Grotesk } from "next/font/google";
 import Script from "next/script";
 import { ThemeProvider, themeInitScript } from "@/components/theme-provider";
+import { AsciiBackground } from "@/components/ascii-background";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -60,6 +61,7 @@ export default function RootLayout({
             className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${hankenGrotesk.variable} h-full antialiased`}
         >
             <body className="min-h-full bg-white text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
+                <AsciiBackground />
                 <Script
                     id="theme-init"
                     strategy="beforeInteractive"
