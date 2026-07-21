@@ -28,7 +28,7 @@ export function AsciiBackground() {
     return (
         <svg
             aria-hidden
-            className="pointer-events-none fixed inset-0 -z-10 h-full w-full text-neutral-900/[0.025] dark:text-neutral-100/[0.035]"
+            className="pointer-events-none fixed inset-0 -z-10 h-full w-full text-neutral-900/[0.09] dark:text-neutral-100/[0.11]"
         >
             <defs>
                 <pattern
