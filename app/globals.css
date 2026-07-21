@@ -58,7 +58,7 @@
 @keyframes ascii-twinkle {
   0%,
   100% {
-    opacity: 0.3;
+    opacity: 0.05;
   }
   50% {
     opacity: 1;
