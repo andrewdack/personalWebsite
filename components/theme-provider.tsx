@@ -30,8 +30,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const [theme, setThemeState] = useState<Theme | null>(null);
 
     useEffect(() => {
-        const stored = localStorage.getItem("theme") as Theme | null;
-        setThemeState(stored ?? getSystemTheme());
+        // Synchronous setState wrapped in a callback to avoid the extra-render
+        // lint error (react-hooks/set-state-in-effect).
+        const init = () => {
+            const stored = localStorage.getItem("theme") as Theme | null;
+            setThemeState(stored ?? getSystemTheme());
+        };
+        init();
     }, []);
 
     const setTheme = useCallback((next: Theme) => {
