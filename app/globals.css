@@ -52,31 +52,6 @@
   }
 }
 
-/* Per-glyph shimmer for the ASCII background (components/ascii-background.tsx).
-   Duration/delay are set per element inline, so this rule only owns the
-   shape of the pulse itself. */
-@keyframes ascii-twinkle {
-  0%,
-  100% {
-    opacity: 0.05;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-.ascii-twinkle {
-  animation-name: ascii-twinkle;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ascii-twinkle {
-    animation: none;
-  }
-}
-
 body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
