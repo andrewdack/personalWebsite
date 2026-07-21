@@ -22,7 +22,7 @@
      `animate-fade-in-up` utility. `both` holds the "from" state before
      the animation starts (so a staggered section isn't visible at full
      opacity before its delay elapses) and the "to" state after it ends. */
-  --animate-fade-in-up: fade-in-up 700ms var(--ease-smooth) both;
+  --animate-fade-in-up: fade-in-up 1000ms var(--ease-smooth) both;
 }
 
 @keyframes fade-in-up {

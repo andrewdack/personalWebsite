@@ -30,14 +30,16 @@ export default function Home() {
                     </h1>
                     <p className="mt-1.25 flex items-center gap-2 text-[15px] text-neutral-500 dark:text-neutral-400">
                         <FiMapPin size={14} />
-                        {site.location} — <Clock/>
+                        {site.location}
+                        <span className="text-neutral-500 dark:text-neutral-400">—</span>
+                        <Clock />
                     </p>
                 </div>
                 <ThemeToggle />
             </header>
 
             {/* Bio */}
-            <section className="animate-fade-in-up mt-[clamp(0.75rem,2.6vh,2.25rem)] space-y-1 text-[17px] leading-relaxed [animation-delay:90ms]">
+            <section className="animate-fade-in-up mt-[clamp(0.75rem,2.6vh,2.25rem)] space-y-1 text-[17px] leading-relaxed [animation-delay:140ms]">
                 <p className="text-neutral-900 dark:text-neutral-100">{site.bio}</p>
                 <p className="text-neutral-500 dark:text-neutral-400">
                     {site.interests}
@@ -45,7 +47,7 @@ export default function Home() {
             </section>
 
             {/* Experience */}
-            <section className="animate-fade-in-up mt-[clamp(1rem,3.4vh,3.3125rem)] [animation-delay:160ms]">
+            <section className="animate-fade-in-up mt-[clamp(1rem,3.4vh,3.3125rem)] [animation-delay:260ms]">
                 <h2 className={sectionHeading}>
                     Experience
                 </h2>
@@ -80,7 +82,7 @@ export default function Home() {
             </section>
 
             {/* Projects */}
-            <section className="animate-fade-in-up mt-[clamp(1rem,3.4vh,3.3125rem)] [animation-delay:230ms]">
+            <section className="animate-fade-in-up mt-[clamp(1rem,3.4vh,3.3125rem)] [animation-delay:380ms]">
                 <h2 className={sectionHeading}>
                     Projects
                 </h2>
@@ -125,7 +127,7 @@ export default function Home() {
             {/* Footer / socials — stacks on phones so the now-playing marquee
                 gets full width (side-by-side squeezes it to nothing); returns
                 to a single row at sm and up. */}
-            <footer className="animate-fade-in-up mt-[clamp(1rem,3.4vh,3.3125rem)] flex flex-col items-start gap-4 border-t border-neutral-200 pt-[clamp(0.75rem,2vh,2.25rem)] [animation-delay:300ms] sm:flex-row sm:items-center sm:justify-between sm:gap-6.5 dark:border-neutral-800">
+            <footer className="animate-fade-in-up mt-[clamp(1rem,3.4vh,3.3125rem)] flex flex-col items-start gap-4 border-t border-neutral-200 pt-[clamp(0.75rem,2vh,2.25rem)] [animation-delay:500ms] sm:flex-row sm:items-center sm:justify-between sm:gap-6.5 dark:border-neutral-800">
                 <div className="flex items-center gap-5.5">
                     {socialLinks.map(({ label, href, Icon, size }) => (
                         <a
