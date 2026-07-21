@@ -1,4 +1,4 @@
-import { FiArrowUpRight, FiMapPin } from "react-icons/fi";
+import { FiArrowUpRight } from "react-icons/fi";
 import { FaLinkedinIn } from "react-icons/fa6";
 import { IoMdMail } from "react-icons/io";
 import { SiGithub, SiInstagram, SiLeetcode } from "react-icons/si";
@@ -34,7 +34,6 @@ export default function Home() {
                         {site.name}
                     </h1>
                     <p className="mt-1.25 flex items-center gap-2 text-[15px] text-neutral-500 dark:text-neutral-400">
-                        <FiMapPin size={14} />
                         {site.location}
                         <span className="text-neutral-500 dark:text-neutral-400">—</span>
                         <Clock />
