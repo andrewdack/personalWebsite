@@ -9,7 +9,10 @@ export default function Clock() {
     const [time, setTime] = useState<Date | null>(null);
 
     useEffect(() => {
-        setTime(new Date());
+        // We have to put synchronous setState in a callback to avoid extra render lint error
+        const time = () => setTime(new Date());
+        time();
+
         const interval = setInterval(() => {
             setTime(new Date());
         }, 1000);

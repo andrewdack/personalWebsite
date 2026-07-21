@@ -1,9 +1,14 @@
-// Satori (used by next/og's ImageResponse) has no built-in CJK glyph
-// support, so any non-Latin character needs its font bytes passed in
-// explicitly. Google Fonts serves woff2 by default, which Satori can't
-// read — spoofing an old Chrome UA gets the ttf variant instead, and
-// `text=` subsets the response to just the glyphs we need.
-export async function loadGoogleFont(family: string, text: string, weight?: number) {
+// Satori (used by next/og's ImageResponse) can't read system/next-font
+// fonts and has no built-in non-Latin glyph support, so any font used in
+// a generated icon/OG image needs its bytes passed in explicitly. Google
+// Fonts serves woff2 by default, which Satori can't read — spoofing an
+// old Chrome UA gets the ttf variant instead, and `text=` subsets the
+// response to just the glyphs actually used.
+export async function loadGoogleFont(
+    family: string,
+    text: string,
+    weight?: number,
+) {
     const familyParam = weight ? `${family}:wght@${weight}` : family;
     const css = await (
         await fetch(
@@ -19,7 +24,9 @@ export async function loadGoogleFont(family: string, text: string, weight?: numb
 
     const match = css.match(/src: url\(([^)]+)\)/);
     if (!match) {
-        throw new Error(`${family} font URL not found in Google Fonts response`);
+        throw new Error(
+            `${family} font URL not found in Google Fonts response`,
+        );
     }
     const fontRes = await fetch(match[1]);
     return fontRes.arrayBuffer();
