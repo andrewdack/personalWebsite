@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Fraunces, Hanken_Grotesk } from "next/font/google";
 import Script from "next/script";
 import { ThemeProvider, themeInitScript } from "@/components/theme-provider";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -65,6 +66,7 @@ export default function RootLayout({
                     dangerouslySetInnerHTML={{ __html: themeInitScript }}
                 />
                 <ThemeProvider>{children}</ThemeProvider>
+                <Analytics />
             </body>
         </html>
     );
