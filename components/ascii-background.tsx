@@ -25,6 +25,7 @@ const FONT_SIZE = 13; // px
 const CELL_W = 10; // px advance between columns
 const CELL_H = 15; // px advance between rows
 const FPS_CAP = 30; // the motion is slow; 30fps looks identical and saves battery
+const FADE_IN_MS = 1400; // ramp opacity up on load, matching the content cascade's entrance window
 const NUM_BUCKETS = 24; // opacity levels — cells are batched by level to cut draw-state changes
 const PEAK_LIGHT = 0.09; // max glyph opacity, light mode
 const PEAK_DARK = 0.07; // ...dark mode: kept low, light glyphs on near-black read hot fast
@@ -139,6 +140,9 @@ export function AsciiBackground() {
         let cssW = 0;
         let cssH = 0;
         let glyphs: string[] = [];
+        // Timestamp of the first animated frame, so the whole field can fade
+        // its opacity up from zero on load instead of snapping in.
+        let fadeStartMs = 0;
         const buckets = Array.from<unknown, number[]>(
             { length: NUM_BUCKETS },
             () => [],
@@ -184,7 +188,16 @@ export function AsciiBackground() {
             // A slow global breathe on top of the local blobs, so overall
             // intensity swells and recedes too.
             const breathe = 0.7 + 0.3 * Math.sin(t * 0.3);
-            const peak = (isDark() ? PEAK_DARK : PEAK_LIGHT) * breathe;
+            let peak = (isDark() ? PEAK_DARK : PEAK_LIGHT) * breathe;
+
+            // Fade the whole field in on load (ease-out), so it arrives with
+            // the content rather than popping in. Skipped under reduced motion,
+            // where there's just one static frame and no entrance anyway.
+            if (!prefersReduced) {
+                if (fadeStartMs === 0) fadeStartMs = nowMs;
+                const f = Math.min(1, (nowMs - fadeStartMs) / FADE_IN_MS);
+                peak *= 1 - (1 - f) ** 3;
+            }
 
             const z = t * NOISE_Z_SPEED;
             const driftX = t * NOISE_DRIFT_X;
