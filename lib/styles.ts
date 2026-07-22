@@ -17,3 +17,8 @@ export const linkHover =
 // (the trigger should carry the accessible name via aria-label).
 export const tooltip =
     "pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-md bg-neutral-900 px-2 py-1 text-xs font-medium text-white opacity-0 transition-all ease-smooth group-hover:translate-y-0 group-hover:opacity-100 dark:bg-neutral-100 dark:text-neutral-900";
+
+
+// Section heading style used for headings like "Experience" and "Projects" on the home page.
+export const sectionHeading = "text-[15px] font-medium uppercase tracking-widest text-neutral-400 dark:text-neutral-500";
+    
