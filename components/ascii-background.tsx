@@ -27,12 +27,18 @@ const CELL_H = 15; // px advance between rows
 const FPS_CAP = 30; // the motion is slow; 30fps looks identical and saves battery
 const NUM_BUCKETS = 24; // opacity levels — cells are batched by level to cut draw-state changes
 const PEAK_LIGHT = 0.09; // max glyph opacity, light mode
-const PEAK_DARK = 0.06; // ...dark mode: kept low, light glyphs on near-black read hot fast
-// Contrast curve. The normalized noise value is raised to this power, so
-// troughs collapse toward transparent and only the peaks surface — the higher
-// the exponent, the more of the field stays empty and the sharper the visible
-// blobs read against the gaps.
-const CONTRAST_GAMMA = 3.2;
+const PEAK_DARK = 0.07; // ...dark mode: kept low, light glyphs on near-black read hot fast
+// Soft threshold applied to the normalized noise. Perlin clusters tightly
+// around 0.5 and barely reaches ~0.66 at its crests, so a gamma curve just
+// dims everything uniformly (mid-range cells never fall to zero → no gaps,
+// and the crests never reach full → dim blobs). A threshold instead maps
+// everything below THRESH_LO to transparent (real gaps) and everything above
+// THRESH_HI to FULL peak (bright blob cores even at low peak opacity), with a
+// smoothstep ramp between. The band sits just above the median so only the
+// upper ~15% of the field shows. See scratchpad percentiles: p50≈0.50,
+// p85≈0.60, p95≈0.66.
+const THRESH_LO = 0.6;
+const THRESH_HI = 0.655;
 // Noise sampling. SCALE sets blob size (smaller = larger, smoother blobs);
 // Z_SPEED is how fast they morph in place; DRIFT gives the whole field a very
 // slow non-axis-aligned wander so it feels alive without an obvious direction.
@@ -198,12 +204,13 @@ export function AsciiBackground() {
                         0.5 * noise(nx * 2, ny2, z * 1.6 + 31.4);
                     v *= 1 / 1.5; // back to ~[-1,1]
                     v = (v + 1) * 0.5; // -> [0,1]
-                    if (v < 0) v = 0;
-                    else if (v > 1) v = 1;
-                    // Gamma so troughs fall to (near-)transparent and only the
-                    // peaks surface — faint blobs against empty gaps.
-                    v = v ** CONTRAST_GAMMA;
-                    const level = (v * NUM_BUCKETS) | 0;
+                    // Soft threshold: below LO -> transparent gap (skip),
+                    // above HI -> full peak, smoothstep ramp between.
+                    let s = (v - THRESH_LO) / (THRESH_HI - THRESH_LO);
+                    if (s <= 0) continue;
+                    if (s >= 1) s = 1;
+                    else s = s * s * (3 - 2 * s);
+                    const level = (s * NUM_BUCKETS) | 0;
                     if (level <= 0) continue;
                     buckets[level >= NUM_BUCKETS ? NUM_BUCKETS - 1 : level].push(
                         r * cols + c,
