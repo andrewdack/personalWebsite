@@ -1,8 +1,10 @@
+import Link from "next/link";
 import { FiArrowUpRight } from "react-icons/fi";
 import { FaLinkedinIn } from "react-icons/fa6";
 import { IoMdMail } from "react-icons/io";
 import { SiGithub, SiInstagram, SiLeetcode } from "react-icons/si";
 import { NowPlaying } from "@/components/now-playing";
+import { ProjectList } from "@/components/project-list";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { site, work, projects, socials } from "@/data/site";
 import { iconLink, linkHover, tooltip } from "@/lib/styles";
@@ -88,51 +90,25 @@ export default function Home() {
                 </ul>
             </section>
 
-            {/* Projects */}
+            {/* Projects — the heading links through to /projects, where the
+                same list lives under a breadcrumb and will grow richer detail. */}
             <section className="mt-[clamp(1rem,3.4vh,3.3125rem)]">
-                <h2 className={`animate-fade-in-up ${sectionHeading}`} style={cascade()}>
-                    Projects
+                <h2 className="animate-fade-in-up" style={cascade()}>
+                    <Link
+                        href="/projects"
+                        className={`group inline-flex items-center gap-1 ${sectionHeading} transition-colors hover:text-neutral-600 dark:hover:text-neutral-300`}
+                    >
+                        <span className="relative">
+                            Projects
+                            <span className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-100 bg-neutral-300 transition-transform duration-300 ease-smooth group-hover:scale-x-0 dark:bg-neutral-600" />
+                        </span>
+                        <FiArrowUpRight
+                            size={13}
+                            className="opacity-0 transition-opacity duration-200 ease-smooth group-hover:opacity-100"
+                        />
+                    </Link>
                 </h2>
-                <ul className="mt-[clamp(0.5rem,1.6vh,1.125rem)] space-y-[clamp(0.5rem,1.6vh,1.625rem)]">
-                    {projects.map((project) => (
-                        <li
-                            key={project.title}
-                            className="animate-fade-in-up"
-                            style={cascade()}
-                        >
-                            <div className="flex items-center gap-3">
-                                <h3 className="text-[17px] font-medium text-neutral-900 dark:text-neutral-100">
-                                    {project.title}
-                                </h3>
-                                {project.github && (
-                                    <a
-                                        href={project.github}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        aria-label={`${project.title} on GitHub`}
-                                        className={iconLink}
-                                    >
-                                        <SiGithub size={15} />
-                                    </a>
-                                )}
-                                {project.link && (
-                                    <a
-                                        href={project.link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        aria-label={`${project.title} live site`}
-                                        className={iconLink}
-                                    >
-                                        <FiArrowUpRight size={15} />
-                                    </a>
-                                )}
-                            </div>
-                            <p className="mt-1.25 text-[17px] leading-relaxed text-neutral-500 dark:text-neutral-400">
-                                {project.description}
-                            </p>
-                        </li>
-                    ))}
-                </ul>
+                <ProjectList itemStyles={projects.map(() => cascade())} />
             </section>
 
             {/* Footer / socials — the divider is its own element rather than

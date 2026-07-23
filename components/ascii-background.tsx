@@ -14,6 +14,13 @@ import { useEffect, useRef } from "react";
 // keeps it — only the opacity animates, so it reads as light washing over a
 // fixed field of characters rather than a churn of random symbols.
 
+// ── Toggle ──────────────────────────────────────────────────────────────
+// Flip this single variable to switch the whole background between the ASCII
+// glyph field and the Bayer-dithered "dapple" dot pattern (the stippled
+// gradient look from Paxel's site). Both are driven by the same underlying 3D
+// Perlin field; only the rendering differs.
+const PATTERN: "ascii" | "dapple" = "dapple";
+
 // A mix of letters, digits and weighty symbols — reads like a hex dump /
 // source scroll. Deliberately excludes wispy glyphs (. , * ; : ~ ^ ' | - _)
 // that leave holes in the texture, and isn't just 0/1 (binary tiled is a
@@ -48,6 +55,40 @@ const NOISE_Z_SPEED = 0.1;
 const NOISE_DRIFT_X = 0.01;
 const NOISE_DRIFT_Y = 0.006;
 const MONO_FONT = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+
+// ── Dapple (Bayer-dithered dot) mode ──────────────────────────────────────
+const DAPPLE_PIXEL = 5; // px grid cell — smaller = finer dither
+const DAPPLE_DOT = 3; // px drawn dot (< DAPPLE_PIXEL leaves gaps between dots)
+const DAPPLE_SCALE = 0.03; // noise units per cell — sets blob size
+const DAPPLE_LO = 0.5; // field below this lights no dots (empty gaps)
+const DAPPLE_HI = 0.72; // field above this lights every dot (solid); between = dithered ramp
+// 4×4 Bayer threshold matrix, normalized to (0,1). Ordered dithering: within
+// each 4×4 tile a cell lights only when the field value clears its threshold,
+// so brighter field regions light proportionally more cells — a stippled
+// gradient rather than a hard edge.
+const BAYER4 = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map(
+    (n) => (n + 0.5) / 16,
+);
+
+// How each cell's intensity becomes a mark:
+//   "halftone" — every cell draws a dot whose SIZE tracks intensity (print /
+//                newspaper look, softer).
+//   "dither"   — fixed-size dots, on/off via the Bayer threshold (the original
+//                stipple). Density does the shading.
+const DAPPLE_STYLE: "halftone" | "dither" = "dither";
+const DAPPLE_DOT_MAX = 4.5; // px — largest halftone dot (at full intensity)
+
+// ── Dapple interactivity ──────────────────────────────────────────────────
+// Every effect below just ADDS to a cell's intensity, so they stack: the base
+// noise field, a glow that follows the cursor, and expanding rings from clicks.
+const SPOTLIGHT_RADIUS = 150; // px — glow reach around the cursor
+const SPOTLIGHT_STRENGTH = 0.14; // intensity added at the cursor's center
+const RIPPLE_ENABLED = false; // click ripples — off by default
+const RIPPLE_SPEED = 450; // px/sec the click ring expands
+const RIPPLE_WIDTH = 30; // px thickness of the ring
+const RIPPLE_STRENGTH = 0.4; // intensity added along the ring
+const RIPPLE_DURATION = 1.5; // sec a ripple lives before fading out
+const RIPPLE_MAX = 6; // most concurrent ripples (older ones drop off)
 
 const darkRGB: [number, number, number] = [245, 245, 245];
 const lightRGB: [number, number, number] = [23, 23, 23];
@@ -143,6 +184,12 @@ export function AsciiBackground() {
         // Timestamp of the first animated frame, so the whole field can fade
         // its opacity up from zero on load instead of snapping in.
         let fadeStartMs = 0;
+        // Cursor position (px, viewport coords). Off-screen until the pointer
+        // moves, so the spotlight only appears once you interact.
+        let mx = -9999;
+        let my = -9999;
+        // Active click ripples: center + spawn time (seconds, matching render's t).
+        const ripples: { x: number; y: number; start: number }[] = [];
         const buckets = Array.from<unknown, number[]>(
             { length: NUM_BUCKETS },
             () => [],
@@ -166,15 +213,19 @@ export function AsciiBackground() {
             ctx.font = `${FONT_SIZE}px ${MONO_FONT}`;
             ctx.textBaseline = "top";
 
-            cols = Math.ceil(cssW / CELL_W) + 1;
-            rows = Math.ceil(cssH / CELL_H) + 1;
+            const cw = PATTERN === "dapple" ? DAPPLE_PIXEL : CELL_W;
+            const ch = PATTERN === "dapple" ? DAPPLE_PIXEL : CELL_H;
+            cols = Math.ceil(cssW / cw) + 1;
+            rows = Math.ceil(cssH / ch) + 1;
 
-            glyphs = new Array(cols * rows);
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    // Stable per-cell hash so a glyph never changes on resize.
-                    const hash = ((c * 73856093) ^ (r * 19349663)) >>> 0;
-                    glyphs[r * cols + c] = GLYPHS[hash % GLYPHS.length];
+            if (PATTERN === "ascii") {
+                glyphs = new Array(cols * rows);
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        // Stable per-cell hash so a glyph never changes on resize.
+                        const hash = ((c * 73856093) ^ (r * 19349663)) >>> 0;
+                        glyphs[r * cols + c] = GLYPHS[hash % GLYPHS.length];
+                    }
                 }
             }
         };
@@ -203,6 +254,113 @@ export function AsciiBackground() {
             const driftX = t * NOISE_DRIFT_X;
             const driftY = t * NOISE_DRIFT_Y;
 
+            ctx.clearRect(0, 0, cssW, cssH);
+            ctx.fillStyle = `rgb(${color[0] | 0}, ${color[1] | 0}, ${color[2] | 0})`;
+
+            if (PATTERN === "dapple") {
+                // All dots share the same faint alpha — the dither density (or
+                // halftone dot size) does the shading, so one globalAlpha batch.
+                ctx.globalAlpha = peak;
+                const span = DAPPLE_HI - DAPPLE_LO;
+                const half = DAPPLE_PIXEL / 2;
+                const spotR2 = SPOTLIGHT_RADIUS * SPOTLIGHT_RADIUS;
+                const fixedOff = (DAPPLE_PIXEL - DAPPLE_DOT) / 2;
+
+                // Snapshot the active ripples for this frame: expiring ones are
+                // dropped, the rest reduced to a current radius + fade level.
+                // inner2/outer2 are the squared radii of the ring's annulus —
+                // cells whose squared distance falls outside it get skipped
+                // before the (expensive) sqrt, so each ripple only actually
+                // touches the thin band of cells on the ring, not the whole grid.
+                const rings: {
+                    x: number;
+                    y: number;
+                    radius: number;
+                    life: number;
+                    inner2: number;
+                    outer2: number;
+                }[] = [];
+                for (let i = ripples.length - 1; i >= 0; i--) {
+                    const age = t - ripples[i].start;
+                    if (age > RIPPLE_DURATION) {
+                        ripples.splice(i, 1);
+                        continue;
+                    }
+                    const radius = age * RIPPLE_SPEED;
+                    const inner = radius - RIPPLE_WIDTH;
+                    rings.push({
+                        x: ripples[i].x,
+                        y: ripples[i].y,
+                        radius,
+                        life: 1 - age / RIPPLE_DURATION,
+                        inner2: inner > 0 ? inner * inner : 0,
+                        outer2: (radius + RIPPLE_WIDTH) * (radius + RIPPLE_WIDTH),
+                    });
+                }
+
+                for (let r = 0; r < rows; r++) {
+                    const ny = r * DAPPLE_SCALE + driftY;
+                    const cy = r * DAPPLE_PIXEL + half;
+                    const row4 = (r & 3) * 4;
+                    for (let c = 0; c < cols; c++) {
+                        const nx = c * DAPPLE_SCALE + driftX;
+                        const cx = c * DAPPLE_PIXEL + half;
+
+                        // Base field, then additive cursor glow and click rings.
+                        let v = (noise(nx, ny, z) + 1) * 0.5;
+
+                        const dx = cx - mx;
+                        const dy = cy - my;
+                        const d2 = dx * dx + dy * dy;
+                        if (d2 < spotR2) {
+                            const f = 1 - d2 / spotR2;
+                            v += SPOTLIGHT_STRENGTH * f * f;
+                        }
+
+                        for (let i = 0; i < rings.length; i++) {
+                            const rp = rings[i];
+                            const ex = cx - rp.x;
+                            const ey = cy - rp.y;
+                            const dd = ex * ex + ey * ey;
+                            // Cull to the ring's annulus before the sqrt.
+                            if (dd < rp.inner2 || dd > rp.outer2) continue;
+                            const d = Math.sqrt(dd);
+                            const band = 1 - Math.abs(d - rp.radius) / RIPPLE_WIDTH;
+                            if (band > 0) v += RIPPLE_STRENGTH * rp.life * band;
+                        }
+
+                        if (DAPPLE_STYLE === "halftone") {
+                            // Dot size tracks intensity through the [LO,HI] band.
+                            let s = (v - DAPPLE_LO) / span;
+                            if (s <= 0) continue;
+                            if (s > 1) s = 1;
+                            const size = s * DAPPLE_DOT_MAX;
+                            const o = (DAPPLE_PIXEL - size) / 2;
+                            ctx.fillRect(
+                                c * DAPPLE_PIXEL + o,
+                                r * DAPPLE_PIXEL + o,
+                                size,
+                                size,
+                            );
+                        } else {
+                            // Ordered dither: on/off via the Bayer threshold.
+                            if (v <= DAPPLE_LO + span * BAYER4[row4 + (c & 3)])
+                                continue;
+                            ctx.fillRect(
+                                c * DAPPLE_PIXEL + fixedOff,
+                                r * DAPPLE_PIXEL + fixedOff,
+                                DAPPLE_DOT,
+                                DAPPLE_DOT,
+                            );
+                        }
+                    }
+                }
+                ctx.globalAlpha = 1;
+                return;
+            }
+
+            // ASCII mode: bucket cells by opacity level, then draw each bucket
+            // in one pass to minimize globalAlpha changes.
             for (let b = 0; b < NUM_BUCKETS; b++) buckets[b].length = 0;
 
             for (let r = 0; r < rows; r++) {
@@ -230,9 +388,6 @@ export function AsciiBackground() {
                     );
                 }
             }
-
-            ctx.clearRect(0, 0, cssW, cssH);
-            ctx.fillStyle = `rgb(${color[0] | 0}, ${color[1] | 0}, ${color[2] | 0})`;
 
             for (let b = 0; b < NUM_BUCKETS; b++) {
                 const arr = buckets[b];
@@ -288,10 +443,43 @@ export function AsciiBackground() {
         };
         const onResize = () => setup();
         window.addEventListener("resize", onResize);
+
+        // Cursor spotlight + click ripples — dapple mode only. The canvas is
+        // pointer-events-none, so listen on the window and read global pointer
+        // coords (which already match the full-viewport canvas's px space).
+        const onMove = (e: PointerEvent) => {
+            mx = e.clientX;
+            my = e.clientY;
+        };
+        const onLeave = () => {
+            mx = -9999;
+            my = -9999;
+        };
+        const onDown = (e: PointerEvent) => {
+            if (ripples.length >= RIPPLE_MAX) ripples.shift();
+            ripples.push({
+                x: e.clientX,
+                y: e.clientY,
+                start: performance.now() * 0.001,
+            });
+        };
+        const interactive = PATTERN === "dapple";
+        if (interactive) {
+            window.addEventListener("pointermove", onMove);
+            window.addEventListener("blur", onLeave);
+            if (RIPPLE_ENABLED) window.addEventListener("pointerdown", onDown);
+        }
+
         raf = requestAnimationFrame(loop);
         return () => {
             cancelAnimationFrame(raf);
             window.removeEventListener("resize", onResize);
+            if (interactive) {
+                window.removeEventListener("pointermove", onMove);
+                window.removeEventListener("blur", onLeave);
+                if (RIPPLE_ENABLED)
+                    window.removeEventListener("pointerdown", onDown);
+            }
         };
     }, []);
 
