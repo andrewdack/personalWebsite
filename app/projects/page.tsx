@@ -20,11 +20,11 @@ export default function ProjectsPage() {
         <main className="mx-auto flex min-h-dvh max-w-165 flex-col justify-center px-6.5 py-[clamp(0.75rem,3vh,3rem)]">
             {/* Header */}
             <header className="animate-fade-in-up flex items-start justify-between" style={cascade()}>
-                <h1 className="font-serif text-4xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
+                <h1 className="font-serif text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                     <Link href="/" className={linkHover}>
                         Home
                     </Link>
-                    <span className="mx-2 text-neutral-300 dark:text-neutral-700">›</span>
+                    <span className="mx-1.5 text-neutral-300 dark:text-neutral-700">›</span>
                     Projects
                 </h1>
                 <ThemeToggle />
