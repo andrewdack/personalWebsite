@@ -102,10 +102,7 @@ export default function Home() {
                         href="/projects"
                         className={`group inline-flex items-center gap-1 ${sectionHeading} transition-colors hover:text-neutral-600 dark:hover:text-neutral-300`}
                     >
-                        <span className="relative">
-                            Projects
-                            <span className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-100 bg-neutral-300 transition-transform duration-300 ease-smooth group-hover:scale-x-0 dark:bg-neutral-600" />
-                        </span>
+                        Projects
                         <FiArrowUpRight
                             size={13}
                             className="opacity-0 transition-opacity duration-200 ease-smooth group-hover:opacity-100"
