@@ -113,6 +113,20 @@ export default function Home() {
                     </Link>
                 </h2>
                 <ProjectList limit={3} itemStyles={projects.slice(0, 3).map(() => cascade())} />
+                <Link
+                    href="/projects"
+                    className={`animate-fade-in-up group mt-[clamp(0.75rem,1.8vh,1.5rem)] flex w-fit items-center gap-1 text-[15px] font-medium ${linkHover}`}
+                    style={cascade()}
+                >
+                    <span className="relative">
+                        View all projects
+                        <span className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-100 bg-neutral-300 transition-transform duration-300 ease-smooth group-hover:scale-x-0 dark:bg-neutral-600" />
+                    </span>
+                    <FiArrowUpRight
+                        size={15}
+                        className="transition-transform duration-200 ease-smooth group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                    />
+                </Link>
             </section>
 
             {/* Footer / socials — the divider is its own element rather than
