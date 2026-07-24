@@ -5,7 +5,7 @@ import type { TechKey } from "@/lib/tech";
 export const site = {
     name: "Andrew Hu",
     location: "Chantilly, VA",
-    bio: "Student, developer, and hackathon enthusiast. Building interesting stuff",
+    bio: "Student, developer, and hackathon enthusiast. Building full-stack web apps, iOS apps, and AI tooling.",
     interests: "I also like lifting (175lbs bench), volleyball, and piano.",
 };
 
@@ -23,7 +23,7 @@ export const work: WorkEntry[] = [
         company: "Obscurity Labs",
         url: "https://www.obscuritylabs.com",
         dates: "Jun 2026 — Aug 2026",
-        tech: ["go", "docker", "python"],
+        tech: ["docker", "go", "python", "node"],
     },
     {
         role: "Founding Organizer",
