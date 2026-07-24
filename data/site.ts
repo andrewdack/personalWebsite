@@ -5,7 +5,7 @@ import type { TechKey } from "@/lib/tech";
 export const site = {
     name: "Andrew Hu",
     location: "Chantilly, VA",
-    bio: "Student, developer, and hackathon enthusiast. Building interesting stuff.",
+    bio: "Student, developer, and hackathon enthusiast. Building interesting stuff",
     interests: "I also like lifting (175lbs bench), volleyball, and piano.",
 };
 
@@ -13,6 +13,7 @@ export type WorkEntry = {
     role: string;
     company: string;
     url: string; // company link, "#" until filled in
+    dates?: string; // e.g. "Jun 2025 — Present", omit to hide
     tech?: TechKey[]; // stack shown as icons under the role; keys from lib/tech.ts
 };
 
@@ -21,12 +22,14 @@ export const work: WorkEntry[] = [
         role: "Software Engineering Intern",
         company: "Obscurity Labs",
         url: "https://www.obscuritylabs.com",
+        dates: "Jun 2026 — Aug 2026",
         tech: ["go", "docker", "python"],
     },
     {
         role: "Founding Organizer",
         company: "TillyHacks",
         url: "https://www.tillyhacks.org/",
+        dates: "Jan 2025 — Present",
     },
 ];
 
@@ -44,7 +47,7 @@ export const projects: Project[] = [
         description:
             "AI-powered iOS app that watches screen activity and delivers context-aware focus interventions — 1st place at BlairHacks 2026.",
         github: "https://github.com/andrewdack/zenly",
-        tech: ["swift", "express", "typescript"],
+        tech: ["express", "swift", "typescript"],
     },
     {
         title: "DackDB",
@@ -64,7 +67,7 @@ export const projects: Project[] = [
     {
         title: "Quick Claude",
         description:
-            "Floating macOS chat panel summoned with ⌥Space that hooks into your local Claude Code login — no API key — and can read your screen, clipboard, and selected text as context.",
+            "Summon a floating Claude chat panel on your Mac with ⌥Space, using your Claude Code subscription instead of an API key.",
         github: "https://github.com/andrewdack/quick-claude",
         tech: ["swift", "node", "claude"],
     },
@@ -73,13 +76,14 @@ export const projects: Project[] = [
         description:
             "Web3 donation platform on the Solana blockchain that connects donors directly to relief organizations, bypassing bureaucratic delays for transparent, fast crypto funding transfers.",
         github: "https://github.com/andrewdack/ReliefChainV2",
-        tech: ["react"],
+        tech: ["nextjs", "react"],
     },
     {
         title: "EcoAlert",
         description:
-            "Interactive map of real-time weather, air quality, and environmental data with an LLM assistant for instant insights — beginner track winner at HackTheNest.",
+            "Interactive map of real-time weather, air quality, and environmental data + Gemini chatbot for instant insights — beginner track winner at Hack The Nest.",
         github: "https://github.com/Mehxeo/EcoAlert",
+        link: "https://devpost.com/software/ecoalert",
         tech: ["flask", "html", "css", "javascript"],
     },
 ];

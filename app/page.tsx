@@ -64,10 +64,10 @@ export default function Home() {
                     {work.map((entry) => (
                         <li
                             key={entry.role + entry.company}
-                            className="animate-fade-in-up flex flex-col items-start gap-y-1.5 text-[17px] text-neutral-900 dark:text-neutral-100 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-3 sm:gap-y-0"
+                            className="animate-fade-in-up flex items-start gap-x-3 gap-y-1.5 text-[17px] text-neutral-900 dark:text-neutral-100 sm:flex-wrap sm:gap-y-0"
                             style={cascade()}
                         >
-                            <span>
+                            <span className="min-w-0">
                                 {entry.role}{" "}
                                 <span className="text-neutral-400 dark:text-neutral-500">
                                     @
@@ -87,8 +87,13 @@ export default function Home() {
                                         className="opacity-0 transition-opacity duration-200 ease-smooth group-hover:opacity-100"
                                     />
                                 </a>
+                                {entry.dates && (
+                                    <span className="block text-[13px] text-neutral-400 dark:text-neutral-500">
+                                        {entry.dates}
+                                    </span>
+                                )}
                             </span>
-                            <TechStack keys={entry.tech} className="sm:ml-auto" />
+                            <TechStack keys={entry.tech} className="ml-auto shrink-0" />
                         </li>
                     ))}
                 </ul>

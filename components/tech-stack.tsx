@@ -5,9 +5,11 @@ import { tooltipBase } from "@/lib/styles";
 // A row of brand-colored technology icons, each revealing its name in a
 // tooltip on hover. Reuses the shared `tooltip` recipe (same one the footer
 // socials use) so it stays visually consistent. Per-icon brand color is fed
-// in via CSS custom properties on the trigger so a single static className can
+// in via CSS custom properties on the `<li>` so a single static className can
 // still switch between light/dark brand colors — dynamic Tailwind class names
-// wouldn't survive the JIT compile. Renders nothing when there's no stack.
+// wouldn't survive the JIT compile. When a tech has a `url` (see lib/tech.ts),
+// its icon is a link out to that site; otherwise it's inert. Renders nothing
+// when there's no stack.
 // Positioning (margins, alignment) is left to the caller via `className` so
 // the same row can sit inline to the right of a heading or wherever else.
 // The stack is right-aligned by callers, so the last icon sits flush against
@@ -26,14 +28,24 @@ export function TechStack({
     return (
         <ul className={`flex flex-wrap items-center gap-2.5 ${className ?? ""}`}>
             {keys.map((key, i) => {
-                const { label, Icon, color, darkColor, size } = tech[key];
+                const { label, Icon, color, darkColor, size, className: iconClassName, url } = tech[key];
                 const tipPosition =
-                    i === keys.length - 1 ? "right-0" : "left-1/2 -translate-x-1/2";
+                    i === keys.length - 1 ? "left-1/2 -translate-x-1/2" : "left-1/2 -translate-x-1/2";
+                const icon = (
+                    <Icon
+                        size={size ?? 17}
+                        aria-hidden
+                        className={`text-[color:var(--c)] dark:text-[color:var(--cd)] ${iconClassName ?? ""}`}
+                    />
+                );
+                const tooltip = (
+                    <span aria-hidden className={`${tooltipBase} ${tipPosition}`}>
+                        {label}
+                    </span>
+                );
                 return (
                     <li
                         key={key}
-                        aria-label={label}
-                        className="group relative flex"
                         style={
                             {
                                 "--c": color,
@@ -41,14 +53,23 @@ export function TechStack({
                             } as CSSProperties
                         }
                     >
-                        <Icon
-                            size={size ?? 17}
-                            aria-hidden
-                            className="text-[color:var(--c)] dark:text-[color:var(--cd)]"
-                        />
-                        <span aria-hidden className={`${tooltipBase} ${tipPosition}`}>
-                            {label}
-                        </span>
+                        {url ? (
+                            <a
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={label}
+                                className="group relative flex transition-opacity duration-200 ease-smooth hover:opacity-70"
+                            >
+                                {icon}
+                                {tooltip}
+                            </a>
+                        ) : (
+                            <span aria-label={label} className="group relative flex">
+                                {icon}
+                                {tooltip}
+                            </span>
+                        )}
                     </li>
                 );
             })}
