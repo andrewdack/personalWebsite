@@ -37,7 +37,7 @@ const registry = {
     swift: { label: "Swift", Icon: TbBrandSwift, color: "#F05138" },
     // Golang ships as a short, wide "GO" wordmark — it reads tiny at the
     // default 15px, so bump it up to sit level with the square marks.
-    go: { label: "Go", Icon: TbBrandGolang, color: "#00ADD8", size: 22 },
+    go: { label: "Go", Icon: TbBrandGolang, color: "#00ADD8", size: 24 },
     docker: { label: "Docker", Icon: TbBrandDocker, color: "#2496ED" },
     nextjs: { label: "Next.js", Icon: TbBrandNextjs, color: "#000000", darkColor: ON_DARK },
     supabase: { label: "Supabase", Icon: TbBrandSupabase, color: "#3ECF8E" },

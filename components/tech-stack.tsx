@@ -36,7 +36,7 @@ export function TechStack({
                         }
                     >
                         <Icon
-                            size={size ?? 15}
+                            size={size ?? 17}
                             aria-hidden
                             className="text-[color:var(--c)] dark:text-[color:var(--cd)]"
                         />
