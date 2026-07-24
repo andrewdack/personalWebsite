@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { tech, type TechKey } from "@/lib/tech";
-import { tooltip } from "@/lib/styles";
+import { tooltipBase } from "@/lib/styles";
 
 // A row of brand-colored technology icons, each revealing its name in a
 // tooltip on hover. Reuses the shared `tooltip` recipe (same one the footer
@@ -10,6 +10,10 @@ import { tooltip } from "@/lib/styles";
 // wouldn't survive the JIT compile. Renders nothing when there's no stack.
 // Positioning (margins, alignment) is left to the caller via `className` so
 // the same row can sit inline to the right of a heading or wherever else.
+// The stack is right-aligned by callers, so the last icon sits flush against
+// the content edge; its tooltip right-anchors (growing leftward into the
+// content) instead of centering, which would overflow the viewport on narrow
+// screens. Interior tooltips have room, so they stay centered.
 export function TechStack({
     keys,
     className,
@@ -21,8 +25,10 @@ export function TechStack({
 
     return (
         <ul className={`flex flex-wrap items-center gap-2.5 ${className ?? ""}`}>
-            {keys.map((key) => {
+            {keys.map((key, i) => {
                 const { label, Icon, color, darkColor, size } = tech[key];
+                const tipPosition =
+                    i === keys.length - 1 ? "right-0" : "left-1/2 -translate-x-1/2";
                 return (
                     <li
                         key={key}
@@ -40,7 +46,7 @@ export function TechStack({
                             aria-hidden
                             className="text-[color:var(--c)] dark:text-[color:var(--cd)]"
                         />
-                        <span aria-hidden className={tooltip}>
+                        <span aria-hidden className={`${tooltipBase} ${tipPosition}`}>
                             {label}
                         </span>
                     </li>
