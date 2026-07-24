@@ -119,10 +119,7 @@ export default function Home() {
                         View all projects
                         <span className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-100 bg-neutral-300 transition-transform duration-300 ease-smooth group-hover:scale-x-0 dark:bg-neutral-600" />
                     </span>
-                    <FiArrowUpRight
-                        size={15}
-                        className="transition-transform duration-200 ease-smooth group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                    />
+                    <FiArrowUpRight size={15} />
                 </Link>
             </section>
 
