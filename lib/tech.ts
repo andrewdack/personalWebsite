@@ -18,6 +18,9 @@ import {
     TbBrandDocker,
     TbBrandPython,
     TbBrandNodejs,
+    TbBrandHtml5,
+    TbBrandCss3,
+    TbBrandJavascript,
     TbBubbleTea,
 } from "react-icons/tb";
 
@@ -46,6 +49,11 @@ const registry = {
     node: { label: "Node.js", Icon: TbBrandNodejs, color: "#5FA04E" },
     python: { label: "Python", Icon: TbBrandPython, color: "#3776AB", darkColor: "#5B9BD5" },
     react: { label: "React", Icon: TbBrandReact, color: "#61DAFB" },
+    html: { label: "HTML5", Icon: TbBrandHtml5, color: "#E34F26" },
+    css: { label: "CSS3", Icon: TbBrandCss3, color: "#1572B6" },
+    // JavaScript's brand yellow washes out on the light ground, so light mode
+    // gets a darker amber; dark mode keeps the real #F7DF1E.
+    javascript: { label: "JavaScript", Icon: TbBrandJavascript, color: "#D4A017", darkColor: "#F7DF1E" },
 
     // Filled marks (Simple Icons) — niche tools with no Tabler outline.
     claude: { label: "Claude", Icon: SiClaude, color: "#D97757" },

@@ -64,16 +64,9 @@ export const projects: Project[] = [
     {
         title: "Quick Claude",
         description:
-            "Floating macOS chat panel summoned with ⌥Space that wires straight into your local Claude Code login — no API key. A SwiftUI NSPanel over a Node sidecar (Claude Agent SDK) that can screenshot the active window, read the clipboard, and grab selected text as context.",
+            "Floating macOS chat panel summoned with ⌥Space that hooks into your local Claude Code login — no API key — and can read your screen, clipboard, and selected text as context.",
         github: "https://github.com/andrewdack/quick-claude",
         tech: ["swift", "node", "claude"],
-    },
-    {
-        title: "EcoAlert",
-        description:
-            "Web app mapping real-time weather, air quality, and environmental data with an LLM assistant for instant, personalized insights — beginner track winner at HackTheNest. Built with Flask, Leaflet.js, and the Open-Meteo/OpenWeatherMap APIs.",
-        github: "https://github.com/Mehxeo/EcoAlert",
-        tech: ["python", "flask"],
     },
     {
         title: "ReliefChain",
@@ -81,6 +74,13 @@ export const projects: Project[] = [
             "Web3 donation platform on the Solana blockchain that connects donors directly to relief organizations, bypassing bureaucratic delays for transparent, fast crypto funding transfers.",
         github: "https://github.com/andrewdack/ReliefChainV2",
         tech: ["react"],
+    },
+    {
+        title: "EcoAlert",
+        description:
+            "Interactive map of real-time weather, air quality, and environmental data with an LLM assistant for instant insights — beginner track winner at HackTheNest.",
+        github: "https://github.com/Mehxeo/EcoAlert",
+        tech: ["flask", "html", "css", "javascript"],
     },
 ];
 
