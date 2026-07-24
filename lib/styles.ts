@@ -14,6 +14,11 @@ export const linkHover =
 
 // Pill tooltip that fades/slides in above its trigger on hover. Requires
 // the trigger to be `group relative`; mark the tooltip element aria-hidden
-// (the trigger should carry the accessible name via aria-label).
-export const tooltip =
-    "pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-md bg-neutral-900 px-2 py-1 text-xs font-medium text-white opacity-0 transition-all ease-smooth group-hover:translate-y-0 group-hover:opacity-100 dark:bg-neutral-100 dark:text-neutral-900";
+// (the trigger should carry the accessible name via aria-label). `tooltipBase`
+// omits horizontal positioning so callers near a container edge can right- or
+// left-anchor instead of centering (a centered tooltip on an edge-flush
+// trigger overflows the viewport); `tooltip` is the default centered variant.
+export const tooltipBase =
+    "pointer-events-none absolute bottom-full mb-2 translate-y-1 whitespace-nowrap rounded-md bg-neutral-900 px-2 py-1 text-xs font-medium text-white opacity-0 transition-all ease-smooth group-hover:translate-y-0 group-hover:opacity-100 dark:bg-neutral-100 dark:text-neutral-900";
+
+export const tooltip = `${tooltipBase} left-1/2 -translate-x-1/2`;
