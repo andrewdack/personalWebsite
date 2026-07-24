@@ -62,7 +62,7 @@ export const projects: Project[] = [
             "Monkeytype for programmers. Full-stack typing test webapp with real-time analytics, authentication, and leaderboards, built with Next.js and Supabase.",
         link: "http://codertype.xyz",
         github: "https://github.com/andrewdack/codertype.xyz",
-        tech: ["nextjs", "typescript", "fastapi", "tailwind", "supabase"],
+        tech: ["nextjs", "typescript", "fastapi", "supabase"],
     },
     {
         title: "Quick Claude",

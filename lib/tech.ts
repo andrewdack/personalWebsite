@@ -95,13 +95,13 @@ const registry = {
     },
     react: { label: "React", Icon: SiReact, color: "#61DAFB", url: "https://react.dev" },
     html: {
-        label: "HTML5",
+        label: "HTML",
         Icon: SiHtml5,
         color: "#E34F26",
         url: "https://developer.mozilla.org/en-US/docs/Web/HTML",
     },
     css: {
-        label: "CSS3",
+        label: "CSS",
         Icon: SiCss,
         color: "#1572B6",
         url: "https://developer.mozilla.org/en-US/docs/Web/CSS",
