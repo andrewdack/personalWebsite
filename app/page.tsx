@@ -64,7 +64,7 @@ export default function Home() {
                     {work.map((entry) => (
                         <li
                             key={entry.role + entry.company}
-                            className="animate-fade-in-up flex flex-wrap items-center gap-x-3 text-[17px] text-neutral-900 dark:text-neutral-100"
+                            className="animate-fade-in-up flex flex-col items-start gap-y-1.5 text-[17px] text-neutral-900 dark:text-neutral-100 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-3 sm:gap-y-0"
                             style={cascade()}
                         >
                             <span>
@@ -88,7 +88,7 @@ export default function Home() {
                                     />
                                 </a>
                             </span>
-                            <TechStack keys={entry.tech} className="ml-auto" />
+                            <TechStack keys={entry.tech} className="sm:ml-auto" />
                         </li>
                     ))}
                 </ul>
