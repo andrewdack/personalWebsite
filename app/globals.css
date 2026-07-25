@@ -7,6 +7,11 @@
   --font-mono: var(--font-geist-mono);
   --font-serif: var(--font-fraunces);
 
+  /* Dark-mode page background — a touch bluer/warmer than pure black.
+     Named here so it's a first-class color (`bg-night`, etc.) rather than
+     a one-off arbitrary value scattered across markup. */
+  --color-night: #0d1017;
+
   /* Motion tokens — single source of truth for all transitions.
      Every bare `transition-*` utility inherits these defaults, so
      changing the site's feel means editing here, not each call site. */

@@ -60,7 +60,7 @@ export default function RootLayout({
             suppressHydrationWarning
             className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${hankenGrotesk.variable} h-full antialiased`}
         >
-            <body className="min-h-full bg-white text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
+            <body className="min-h-full bg-white text-neutral-900 dark:bg-night dark:text-neutral-100">
                 <AsciiBackground />
                 <Script
                     id="theme-init"

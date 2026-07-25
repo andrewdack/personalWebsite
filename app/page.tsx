@@ -3,6 +3,7 @@ import { FiArrowUpRight } from "react-icons/fi";
 import { FaLinkedinIn } from "react-icons/fa6";
 import { IoMdMail } from "react-icons/io";
 import { SiGithub, SiInstagram } from "react-icons/si";
+import { FitToViewport } from "@/components/fit-to-viewport";
 import { NowPlaying } from "@/components/now-playing";
 import { ProjectList } from "@/components/project-list";
 import { TechStack } from "@/components/tech-stack";
@@ -28,7 +29,8 @@ export default function Home() {
     const cascade = () => ({ animationDelay: `${cascadeStep++ * cascadeStepMs}ms` });
 
     return (
-        <main className="mx-auto flex min-h-dvh max-w-165 md:max-w-170 flex-col justify-center px-6.5 py-[clamp(0.75rem,3vh,3rem)] zoom-[0.92]">
+        <FitToViewport>
+            <main className="mx-auto max-w-165 md:max-w-170 px-6.5 py-[clamp(0.75rem,3vh,3rem)]">
             {/* Header */}
             <header className="animate-fade-in-up flex items-start justify-between" style={cascade()}>
                 <div>
@@ -46,60 +48,64 @@ export default function Home() {
 
             {/* Bio */}
             <section className="mt-[clamp(0.75rem,2.6vh,2.25rem)] space-y-1 text-[17px] leading-relaxed">
-                <p className="animate-fade-in-up text-neutral-900 dark:text-neutral-100" style={cascade()}>
-                    {site.bio}
+                <p className="animate-fade-in-up" style={cascade()}>
+                    <span className="text-neutral-900 dark:text-neutral-100">{site.bio}</span>
                 </p>
-                <p className="animate-fade-in-up text-neutral-500 dark:text-neutral-400" style={cascade()}>
-                    {site.interests} <span className="text-[12px] text-neutral-400 dark:text-neutral-500">(not performative i swear)</span>.
+                <p className="animate-fade-in-up" style={cascade()}>
+                    <span className="text-neutral-500 dark:text-neutral-400">
+                        {site.interests} <span className="text-[12px] text-neutral-400 dark:text-neutral-500">(not performative i swear)</span>.
+                    </span>
                 </p>
             </section>
 
             {/* Experience */}
             <section className="mt-[clamp(1rem,3.4vh,3.3125rem)]">
-                <h2 className={`animate-fade-in-up ${sectionHeading}`} style={cascade()}>
-                    Experience
+                <h2 className="animate-fade-in-up" style={cascade()}>
+                    <span className={sectionHeading}>Experience</span>
                 </h2>
                 <ul className="mt-[clamp(0.5rem,1.6vh,1.125rem)] space-y-[clamp(0.375rem,1vh,0.8125rem)]">
                     {work.map((entry) => (
                         <li
                             key={entry.role + entry.company}
-                            className="animate-fade-in-up text-[17px] text-neutral-900 dark:text-neutral-100"
+                            className="animate-fade-in-up"
                             style={cascade()}
                         >
-                            <div className="flex items-start gap-x-3 gap-y-1.5 sm:flex-wrap sm:gap-y-0">
-                                <span className="min-w-0">
-                                    {entry.role}{" "}
-                                    <span className="text-neutral-400 dark:text-neutral-500">
-                                        @
-                                    </span>{" "}
-                                    <a
-                                        href={entry.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={`group inline-flex items-center gap-0.5 font-medium ${linkHover}`}
-                                    >
-                                        <span className="relative">
-                                            {entry.company}
-                                            <span className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-100 bg-neutral-300 transition-transform duration-300 ease-smooth group-hover:scale-x-0 dark:bg-neutral-600" />
-                                        </span>
-                                        <FiArrowUpRight
-                                            size={13}
-                                            className="opacity-0 transition-opacity duration-200 ease-smooth group-hover:opacity-100"
-                                        />
-                                    </a>
-                                    {entry.dates && (
-                                        <span className="block text-[13px] text-neutral-400 dark:text-neutral-500">
-                                            {entry.dates}
-                                        </span>
-                                    )}
-                                </span>
-                                <TechStack keys={entry.tech} className="ml-auto shrink-0" />
+                            <div className="text-[17px] text-neutral-900 dark:text-neutral-100">
+                                <div className="flex items-start gap-x-3 gap-y-1.5 sm:flex-wrap sm:gap-y-0">
+                                    <span className="min-w-0">
+                                        {entry.role}{" "}
+                                        <span className="text-neutral-400 dark:text-neutral-500">
+                                            @
+                                        </span>{" "}
+                                        <a
+                                            href={entry.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`group inline-flex items-center gap-0.5 font-medium ${linkHover}`}
+                                        >
+                                            <span className="relative">
+                                                {entry.company}
+                                                <span className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-100 bg-neutral-300 transition-transform duration-300 ease-smooth group-hover:scale-x-0 dark:bg-neutral-600" />
+                                            </span>
+                                            <FiArrowUpRight
+                                                size={13}
+                                                className="opacity-0 transition-opacity duration-200 ease-smooth group-hover:opacity-100"
+                                            />
+                                        </a>
+                                        {entry.dates && (
+                                            <span className="block text-[13px] text-neutral-400 dark:text-neutral-500">
+                                                {entry.dates}
+                                            </span>
+                                        )}
+                                    </span>
+                                    <TechStack keys={entry.tech} className="ml-auto shrink-0" />
+                                </div>
+                                {entry.description && (
+                                    <p className="-mt-0.5 text-[15px] leading-relaxed text-neutral-500 dark:text-neutral-400">
+                                        {entry.description}
+                                    </p>
+                                )}
                             </div>
-                            {entry.description && (
-                                <p className="-mt-0.5 text-[15px] leading-relaxed text-neutral-500 dark:text-neutral-400">
-                                    {entry.description}
-                                </p>
-                            )}
                         </li>
                     ))}
                 </ul>
@@ -168,6 +174,7 @@ export default function Home() {
                     </div>
                 </div>
             </footer>
-        </main>
+            </main>
+        </FitToViewport>
     );
 }
