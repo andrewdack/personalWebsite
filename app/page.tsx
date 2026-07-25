@@ -96,7 +96,7 @@ export default function Home() {
                                 <TechStack keys={entry.tech} className="ml-auto shrink-0" />
                             </div>
                             {entry.description && (
-                                <p className="mt-1.25 text-[17px] leading-relaxed text-neutral-500 dark:text-neutral-400">
+                                <p className="-mt-0.5 text-[15px] leading-relaxed text-neutral-500 dark:text-neutral-400">
                                     {entry.description}
                                 </p>
                             )}
@@ -120,7 +120,7 @@ export default function Home() {
                         />
                     </Link>
                 </h2>
-                <ProjectList limit={3} itemStyles={projects.slice(0, 3).map(() => cascade())} />
+                <ProjectList limit={2} itemStyles={projects.slice(0, 2).map(() => cascade())} />
                 <Link
                     href="/projects"
                     className={`animate-fade-in-up group mt-[clamp(0.75rem,1.8vh,1.5rem)] flex w-fit items-center gap-1 text-[15px] font-medium ${linkHover}`}
