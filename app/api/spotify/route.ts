@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic";
-
 const TOKEN_URL = "https://accounts.spotify.com/api/token";
 const NOW_PLAYING_URL =
     "https://api.spotify.com/v1/me/player/currently-playing";
@@ -15,7 +13,7 @@ type Track = {
     url: string;
 };
 
-async function getAccessToken(): Promise<string | null> {
+async function getAccessToken(forceFresh = false): Promise<string | null> {
     const clientId = process.env.SPOTIFY_CLIENT_ID;
     const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
     const refreshToken = process.env.SPOTIFY_REFRESH_TOKEN;
@@ -34,8 +32,13 @@ async function getAccessToken(): Promise<string | null> {
             refresh_token: refreshToken,
         }),
         // Access tokens last an hour; let Vercel's fetch cache reuse one
-        // instead of minting a new token on every poll.
-        next: { revalidate: 3000 },
+        // instead of minting a new token on every poll. Stale-while-revalidate
+        // means an infrequent request can still be handed a token that's
+        // already past its real Spotify expiry while the cache refreshes in
+        // the background — forceFresh bypasses the cache entirely so a caller
+        // that just got a 401 is guaranteed a live token instead of the same
+        // stale one.
+        ...(forceFresh ? { cache: "no-store" as const } : { next: { revalidate: 3000 } }),
     });
     if (!res.ok) return null;
     const data = await res.json();
@@ -52,17 +55,39 @@ function toTrack(item: any, isPlaying: boolean): Track {
     };
 }
 
+// Fetches a Spotify endpoint with the given token, and on a 401 (the cached
+// token was stale) mints a fresh one and retries once before giving up.
+async function fetchSpotify(
+    url: string,
+    accessToken: string,
+    init: RequestInit,
+): Promise<{ res: Response; accessToken: string } | null> {
+    const request = (token: string) =>
+        fetch(url, { ...init, headers: { Authorization: `Bearer ${token}` } });
+
+    let res = await request(accessToken);
+    if (res.status === 401) {
+        const fresh = await getAccessToken(true);
+        if (!fresh) return null;
+        accessToken = fresh;
+        res = await request(accessToken);
+    }
+    return { res, accessToken };
+}
+
 export async function GET() {
-    const accessToken = await getAccessToken();
+    let accessToken = await getAccessToken();
     if (!accessToken) {
         return NextResponse.json({ configured: false });
     }
-    const auth = { Authorization: `Bearer ${accessToken}` };
 
-    const nowRes = await fetch(NOW_PLAYING_URL, {
-        headers: auth,
+    const nowResult = await fetchSpotify(NOW_PLAYING_URL, accessToken, {
         cache: "no-store",
     });
+    if (!nowResult) return NextResponse.json({ configured: false });
+    accessToken = nowResult.accessToken;
+    const nowRes = nowResult.res;
+
     if (nowRes.status === 200) {
         const data = await nowRes.json();
         if (data.item && data.currently_playing_type === "track") {
@@ -75,10 +100,12 @@ export async function GET() {
     // Cache the recently-played lookup — it changes rarely and has a much
     // stricter rate limit than currently-playing, so refetching it on every
     // 60s poll risks tripping a multi-hour 429 ban for no benefit.
-    const recentRes = await fetch(RECENTLY_PLAYED_URL, {
-        headers: auth,
+    const recentResult = await fetchSpotify(RECENTLY_PLAYED_URL, accessToken, {
         next: { revalidate: 120 },
     });
+    if (!recentResult) return NextResponse.json({ configured: false });
+    const recentRes = recentResult.res;
+
     if (recentRes.ok) {
         const data = await recentRes.json();
         const item = data.items?.[0]?.track;
