@@ -16,8 +16,9 @@ import {
     SiHtml5,
     SiCss,
     SiJavascript,
+    SiKotlin,
 } from "react-icons/si";
-import { FaGolang, FaPython } from "react-icons/fa6";
+import { FaGolang, FaPython, FaJava } from "react-icons/fa6";
 // Get custom express icon because the SI library is chopped
 import { CustomExpressIcon, BubbleTeaIcon } from "@/components/custom-icons";
 
@@ -82,6 +83,18 @@ const registry = {
         color: "#3776AB",
         darkColor: "#5B9BD5",
         url: "https://www.python.org",
+    },
+    java: {
+        label: "Java",
+        Icon: FaJava,
+        color: "#ED8B00",
+        url: "https://www.java.com",
+    },
+    kotlin: {
+        label: "Kotlin",
+        Icon: SiKotlin,
+        color: "#7F52FF",
+        url: "https://kotlinlang.org",
     },
     react: { label: "React", Icon: SiReact, color: "#61DAFB", url: "https://react.dev" },
     html: {

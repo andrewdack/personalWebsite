@@ -5,8 +5,9 @@ import type { TechKey } from "@/lib/tech";
 export const site = {
     name: "Andrew Hu",
     location: "Chantilly, VA",
-    bio: "Student and developer building apps, tools, and the occasional robot ",
-    interests: "I also like lifting (175lbs bench), volleyball, piano, and matcha",
+    bio: "Student and developer building apps and tools I find compelling and fun.",
+    interests:
+        "I also like lifting (175lbs bench), volleyball, piano, and matcha",
 };
 
 export type WorkEntry = {
@@ -23,7 +24,7 @@ export const work: WorkEntry[] = [
         role: "Software Engineering Intern",
         company: "Obscurity Labs",
         url: "https://www.obscuritylabs.com",
-        description: "Building AI Tooling ",
+        description: "AI Agent Tooling ",
         dates: "Jun 2026 — Aug 2026",
         tech: ["go", "python", "node", "docker"],
     },
@@ -33,6 +34,14 @@ export const work: WorkEntry[] = [
         url: "https://www.tillyhacks.org/",
         description: "Chantilly High School's first ever student-led hackathon",
         dates: "Dec 2025 — Present",
+    },
+    {
+        role: "Captain & Software Lead",
+        company: 'FTC Team 9073 "Knightrix"',
+        url: "https://www.instagram.com/9073knightrix/",
+        description: "Finite state machines, PID loops, Kalman filter, computer vision, and autonomous pathing",
+        dates: "Sep 2024 — Present",
+        tech: ["java", "kotlin"],
     },
 ];
 
