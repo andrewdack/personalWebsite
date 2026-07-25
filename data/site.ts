@@ -23,13 +23,13 @@ export const work: WorkEntry[] = [
         company: "Obscurity Labs",
         url: "https://www.obscuritylabs.com",
         dates: "Jun 2026 — Aug 2026",
-        tech: ["docker", "go", "python", "node"],
+        tech: ["go", "python", "node", "docker"],
     },
     {
         role: "Founding Organizer",
         company: "TillyHacks",
         url: "https://www.tillyhacks.org/",
-        dates: "Jan 2025 — Present",
+        dates: "Dec 2025 — Present",
     },
 ];
 
@@ -39,15 +39,17 @@ export type Project = {
     github?: string; // repo link, omit to hide the icon
     link?: string; // live site link, omit to hide the icon
     tech?: TechKey[]; // stack shown as icons under the title; keys from lib/tech.ts
+    dates?: string; // e.g. "Jun 2025 — Present", omit to hide; shown on /projects only
 };
 
 export const projects: Project[] = [
     {
         title: "Zenly",
         description:
-            "AI-powered iOS app that watches screen activity and delivers context-aware focus interventions — 1st place at BlairHacks 2026.",
+            "AI-powered iOS app that watches screen activity and delivers context-aware focus interventions — 1st place at BlairHacks, June 2026.",
         github: "https://github.com/andrewdack/zenly",
         tech: ["express", "swift", "typescript"],
+        dates: "Jun 2026",
     },
     {
         title: "DackDB",
@@ -55,6 +57,7 @@ export const projects: Project[] = [
             "In-memory relational database in Go with an append-only WAL, crash recovery, and a SQL execution layer.",
         github: "https://github.com/andrewdack/dackdb/tree/tui",
         tech: ["go", "bubbletea"],
+        dates: "May 2026",
     },
     {
         title: "Codertype",
@@ -63,6 +66,7 @@ export const projects: Project[] = [
         link: "http://codertype.xyz",
         github: "https://github.com/andrewdack/codertype.xyz",
         tech: ["nextjs", "typescript", "fastapi", "supabase"],
+        dates: "Mar 2026 — May 2026",
     },
     {
         title: "Quick Claude",
@@ -70,6 +74,7 @@ export const projects: Project[] = [
             "Summon a floating Claude chat panel on your Mac with ⌥Space, using your Claude Code subscription instead of an API key.",
         github: "https://github.com/andrewdack/quick-claude",
         tech: ["swift", "node", "claude"],
+        dates: "Jul 2026",
     },
     {
         title: "ReliefChain",
@@ -77,6 +82,7 @@ export const projects: Project[] = [
             "Web3 donation platform on the Solana blockchain that connects donors directly to relief organizations, bypassing bureaucratic delays for transparent, fast crypto funding transfers.",
         github: "https://github.com/andrewdack/ReliefChainV2",
         tech: ["nextjs", "react"],
+        dates: "Sep 2025",
     },
     {
         title: "EcoAlert",
@@ -85,6 +91,7 @@ export const projects: Project[] = [
         github: "https://github.com/Mehxeo/EcoAlert",
         link: "https://devpost.com/software/ecoalert",
         tech: ["flask", "html", "css", "javascript"],
+        dates: "May 2025",
     },
 ];
 

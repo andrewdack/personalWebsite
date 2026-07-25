@@ -45,7 +45,7 @@ export default function ProjectsPage() {
             </header>
 
             <section className="mt-[clamp(1rem,3.4vh,3.3125rem)]">
-                <ProjectList itemStyles={projects.map(() => cascade())} />
+                <ProjectList showDates itemStyles={projects.map(() => cascade())} />
             </section>
         </main>
     );

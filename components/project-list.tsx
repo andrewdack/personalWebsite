@@ -15,13 +15,17 @@ import { TechStack } from "@/components/tech-stack";
 // stagger order off. The /projects page is where richer per-project detail
 // (visuals, tech, writeups) will hang off these entries later. Pass `limit`
 // to show only the first N projects — the home page teases the top few and
-// links through to /projects for the full list.
+// links through to /projects for the full list. Pass `showDates` to render
+// each project's `dates` (same small-gray-text treatment as the Experience
+// dates) — the home page teaser omits them to stay compact; /projects shows them.
 export function ProjectList({
     itemStyles,
     limit,
+    showDates,
 }: {
     itemStyles?: CSSProperties[];
     limit?: number;
+    showDates?: boolean;
 }) {
     const shown = limit === undefined ? projects : projects.slice(0, limit);
     return (
@@ -56,6 +60,11 @@ export function ProjectList({
                         )}
                         <TechStack keys={project.tech} className="ml-auto" />
                     </div>
+                    {showDates && project.dates && (
+                        <span className="block text-[13px] text-neutral-400 dark:text-neutral-500">
+                            {project.dates}
+                        </span>
+                    )}
                     <p className="mt-1.25 text-[17px] leading-relaxed text-neutral-500 dark:text-neutral-400">
                         {project.description}
                     </p>

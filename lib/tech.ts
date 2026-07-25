@@ -60,7 +60,7 @@ const registry = {
         Icon: SiNextdotjs,
         color: "#000000",
         darkColor: ON_DARK,
-        url: "https://next  js.org",
+        url: "https://nextjs.org",
     },
     supabase: {
         label: "Supabase",
