@@ -2,7 +2,7 @@ import Link from "next/link";
 import { FiArrowUpRight } from "react-icons/fi";
 import { FaLinkedinIn } from "react-icons/fa6";
 import { IoMdMail } from "react-icons/io";
-import { SiGithub, SiInstagram, SiLeetcode } from "react-icons/si";
+import { SiGithub, SiInstagram } from "react-icons/si";
 import { NowPlaying } from "@/components/now-playing";
 import { ProjectList } from "@/components/project-list";
 import { TechStack } from "@/components/tech-stack";
@@ -18,7 +18,6 @@ const socialLinks = [
     { label: "GitHub", href: socials.github, Icon: SiGithub },
     { label: "LinkedIn", href: socials.linkedin, Icon: FaLinkedinIn },
     { label: "Instagram", href: socials.instagram, Icon: SiInstagram},
-    { label: "LeetCode", href: socials.leetcode, Icon: SiLeetcode },
     { label: "Send an email!", href: socials.email, Icon: IoMdMail, size: 21 },
 ];
 
@@ -29,7 +28,7 @@ export default function Home() {
     const cascade = () => ({ animationDelay: `${cascadeStep++ * cascadeStepMs}ms` });
 
     return (
-        <main className="mx-auto flex min-h-dvh max-w-165 flex-col justify-center px-6.5 py-[clamp(0.75rem,3vh,3rem)]">
+        <main className="mx-auto flex min-h-dvh max-w-165 md:max-w-170 flex-col justify-center px-6.5 py-[clamp(0.75rem,3vh,3rem)] zoom-[0.92]">
             {/* Header */}
             <header className="animate-fade-in-up flex items-start justify-between" style={cascade()}>
                 <div>
@@ -51,7 +50,7 @@ export default function Home() {
                     {site.bio}
                 </p>
                 <p className="animate-fade-in-up text-neutral-500 dark:text-neutral-400" style={cascade()}>
-                    {site.interests}
+                    {site.interests} <span className="text-[12px] text-neutral-400 dark:text-neutral-500">(not performative i swear)</span>.
                 </p>
             </section>
 
@@ -64,36 +63,43 @@ export default function Home() {
                     {work.map((entry) => (
                         <li
                             key={entry.role + entry.company}
-                            className="animate-fade-in-up flex items-start gap-x-3 gap-y-1.5 text-[17px] text-neutral-900 dark:text-neutral-100 sm:flex-wrap sm:gap-y-0"
+                            className="animate-fade-in-up text-[17px] text-neutral-900 dark:text-neutral-100"
                             style={cascade()}
                         >
-                            <span className="min-w-0">
-                                {entry.role}{" "}
-                                <span className="text-neutral-400 dark:text-neutral-500">
-                                    @
-                                </span>{" "}
-                                <a
-                                    href={entry.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={`group inline-flex items-center gap-0.5 font-medium ${linkHover}`}
-                                >
-                                    <span className="relative">
-                                        {entry.company}
-                                        <span className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-100 bg-neutral-300 transition-transform duration-300 ease-smooth group-hover:scale-x-0 dark:bg-neutral-600" />
-                                    </span>
-                                    <FiArrowUpRight
-                                        size={13}
-                                        className="opacity-0 transition-opacity duration-200 ease-smooth group-hover:opacity-100"
-                                    />
-                                </a>
-                                {entry.dates && (
-                                    <span className="block text-[13px] text-neutral-400 dark:text-neutral-500">
-                                        {entry.dates}
-                                    </span>
-                                )}
-                            </span>
-                            <TechStack keys={entry.tech} className="ml-auto shrink-0" />
+                            <div className="flex items-start gap-x-3 gap-y-1.5 sm:flex-wrap sm:gap-y-0">
+                                <span className="min-w-0">
+                                    {entry.role}{" "}
+                                    <span className="text-neutral-400 dark:text-neutral-500">
+                                        @
+                                    </span>{" "}
+                                    <a
+                                        href={entry.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`group inline-flex items-center gap-0.5 font-medium ${linkHover}`}
+                                    >
+                                        <span className="relative">
+                                            {entry.company}
+                                            <span className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-100 bg-neutral-300 transition-transform duration-300 ease-smooth group-hover:scale-x-0 dark:bg-neutral-600" />
+                                        </span>
+                                        <FiArrowUpRight
+                                            size={13}
+                                            className="opacity-0 transition-opacity duration-200 ease-smooth group-hover:opacity-100"
+                                        />
+                                    </a>
+                                    {entry.dates && (
+                                        <span className="block text-[13px] text-neutral-400 dark:text-neutral-500">
+                                            {entry.dates}
+                                        </span>
+                                    )}
+                                </span>
+                                <TechStack keys={entry.tech} className="ml-auto shrink-0" />
+                            </div>
+                            {entry.description && (
+                                <p className="mt-1.25 text-[17px] leading-relaxed text-neutral-500 dark:text-neutral-400">
+                                    {entry.description}
+                                </p>
+                            )}
                         </li>
                     ))}
                 </ul>

@@ -16,7 +16,7 @@ export default function ProjectsPage() {
     const cascade = () => ({ animationDelay: `${cascadeStep++ * cascadeStepMs}ms` });
 
     return (
-        <main className="mx-auto flex min-h-dvh max-w-165 flex-col justify-center px-6.5 py-[clamp(0.75rem,3vh,3rem)]">
+        <main className="mx-auto flex min-h-dvh max-w-165 md:max-w-170 flex-col justify-center px-6.5 py-[clamp(0.75rem,3vh,3rem)] zoom-[0.92]">
             {/* Breadcrumb takes the slot the site name holds on the home page. */}
             <header className="animate-fade-in-up flex items-start justify-between" style={cascade()}>
                 <nav

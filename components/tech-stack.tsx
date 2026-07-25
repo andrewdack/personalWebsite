@@ -35,7 +35,7 @@ export function TechStack({
                     <Icon
                         size={size ?? 17}
                         aria-hidden
-                        className={`text-[color:var(--c)] dark:text-[color:var(--cd)] ${iconClassName ?? ""}`}
+                        className={`text-(--c) dark:text-(--cd) ${iconClassName ?? ""}`}
                     />
                 );
                 const tooltip = (

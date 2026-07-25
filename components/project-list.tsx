@@ -68,6 +68,11 @@ export function ProjectList({
                     <p className="mt-1.25 text-[17px] leading-relaxed text-neutral-500 dark:text-neutral-400">
                         {project.description}
                     </p>
+                    {project.info && (
+                        <p className="mt-0.5 text-[13px] text-neutral-400 dark:text-neutral-500">
+                            {project.info}
+                        </p>
+                    )}
                 </li>
             ))}
         </ul>
