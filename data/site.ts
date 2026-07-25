@@ -5,14 +5,15 @@ import type { TechKey } from "@/lib/tech";
 export const site = {
     name: "Andrew Hu",
     location: "Chantilly, VA",
-    bio: "Student, developer, and hackathon enthusiast. Building full-stack web apps, iOS apps, and AI tooling.",
-    interests: "I also like lifting (175lbs bench), volleyball, and piano.",
+    bio: "Student and developer building apps, tools, and the occasional robot ",
+    interests: "I also like lifting (175lbs bench), volleyball, piano, and matcha",
 };
 
 export type WorkEntry = {
     role: string;
     company: string;
     url: string; // company link, "#" until filled in
+    description?: string; // shown under the role/company line, omit to hide
     dates?: string; // e.g. "Jun 2025 — Present", omit to hide
     tech?: TechKey[]; // stack shown as icons under the role; keys from lib/tech.ts
 };
@@ -22,6 +23,7 @@ export const work: WorkEntry[] = [
         role: "Software Engineering Intern",
         company: "Obscurity Labs",
         url: "https://www.obscuritylabs.com",
+        description: "Building AI Tooling ",
         dates: "Jun 2026 — Aug 2026",
         tech: ["go", "python", "node", "docker"],
     },
@@ -29,6 +31,7 @@ export const work: WorkEntry[] = [
         role: "Founding Organizer",
         company: "TillyHacks",
         url: "https://www.tillyhacks.org/",
+        description: "Chantilly High School's first ever student-led hackathon",
         dates: "Dec 2025 — Present",
     },
 ];
@@ -36,6 +39,7 @@ export const work: WorkEntry[] = [
 export type Project = {
     title: string;
     description: string;
+    info?: string; // hackathon placement/award, shown under the description
     github?: string; // repo link, omit to hide the icon
     link?: string; // live site link, omit to hide the icon
     tech?: TechKey[]; // stack shown as icons under the title; keys from lib/tech.ts
@@ -46,7 +50,8 @@ export const projects: Project[] = [
     {
         title: "Zenly",
         description:
-            "AI-powered iOS app that watches screen activity and delivers context-aware focus interventions — 1st place at BlairHacks, June 2026.",
+            "An iOS app + iMessage Agent that captures screen activity for contextual awareness, uses LLM-as-judge, and intervenes to stop you from doomscrolling.",
+        info: "1st place at BlairHacks 2026",
         github: "https://github.com/andrewdack/zenly",
         tech: ["express", "swift", "typescript"],
         dates: "Jun 2026",
@@ -62,8 +67,8 @@ export const projects: Project[] = [
     {
         title: "Codertype",
         description:
-            "Monkeytype for programmers. Full-stack typing test webapp with real-time analytics, authentication, and leaderboards, built with Next.js and Supabase.",
-        link: "http://codertype.xyz",
+            "Monkeytype for programmers. Full-stack typing test with real-time analytics, authentication, and leaderboards. Built w/ Next.js, FastAPI, & Supabase",
+        link: "https://codertype.xyz",
         github: "https://github.com/andrewdack/codertype.xyz",
         tech: ["nextjs", "typescript", "fastapi", "supabase"],
         dates: "Mar 2026 — May 2026",
@@ -81,13 +86,14 @@ export const projects: Project[] = [
         description:
             "Web3 donation platform on the Solana blockchain that connects donors directly to relief organizations, bypassing bureaucratic delays for transparent, fast crypto funding transfers.",
         github: "https://github.com/andrewdack/ReliefChainV2",
-        tech: ["nextjs", "react"],
+        tech: ["nextjs", "typescript", "supabase"],
         dates: "Sep 2025",
     },
     {
         title: "EcoAlert",
         description:
-            "Interactive map of real-time weather, air quality, and environmental data + Gemini chatbot for instant insights — beginner track winner at Hack The Nest.",
+            "Interactive map of real-time weather, air quality, and environmental data + Gemini chatbot for instant insights.",
+        info: "Beginner track winner at Hack The Nest",
         github: "https://github.com/Mehxeo/EcoAlert",
         link: "https://devpost.com/software/ecoalert",
         tech: ["flask", "html", "css", "javascript"],
@@ -99,6 +105,5 @@ export const socials = {
     github: "https://github.com/andrewdack",
     linkedin: "https://linkedin.com/in/andrew-j-hu-",
     instagram: "https://www.instagram.com/andrewjhu_/",
-    leetcode: "https://leetcode.com/u/hMLmonWJEa/",
     email: "mailto:andrew.dack.hu@gmail.com",
 };
