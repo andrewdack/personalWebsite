@@ -69,19 +69,29 @@ export function CustomExpressIcon({
                 </mask>
             </defs>
             <g fill="none">
+                {/* fill-current (not a literal hex) so the badge inherits
+                    whatever `color` the caller's text-* classes set — TechStack
+                    drives that between a muted neutral by default and the
+                    brand black/cream on hover, same as every other icon. */}
                 <rect
                     width="256"
                     height="256"
                     rx="60"
-                    className="fill-[#0F0F0F] dark:fill-[#F4F2ED]"
+                    className="fill-current"
                     mask="url(#express-mark-mask)"
                 />
-                <path d={EXPRESS_MARK_PATH} className="hidden dark:block dark:fill-[#0F0F0F]" />
+                {/* Dark-mode-only mark drawn on top of the (unpunched) badge.
+                    It must contrast against the badge rather than track it,
+                    so it's pinned to the page bg color instead of fill-current. */}
+                <path d={EXPRESS_MARK_PATH} className="hidden dark:block dark:fill-night" />
             </g>
         </svg>
     );
 }
 
+// A raster PNG, so it can't pick up `currentColor` like the rest of the
+// tech icons — muted/brand-on-hover is faked with a grayscale+opacity filter
+// instead of a fill swap.
 export function BubbleTeaIcon({ size = 17, className, "aria-hidden": ariaHidden }: IconBaseProps) {
     const px = typeof size === "number" ? size : parseInt(size, 10) || 17;
     return (
@@ -90,7 +100,7 @@ export function BubbleTeaIcon({ size = 17, className, "aria-hidden": ariaHidden 
             alt=""
             width={px}
             height={px}
-            className={`rounded-[23%] ${className ?? ""}`}
+            className={`rounded-[23%] grayscale opacity-60 transition-[filter,opacity] duration-200 ease-smooth group-hover:grayscale-0 group-hover:opacity-100 ${className ?? ""}`}
             aria-hidden={ariaHidden}
         />
     );
