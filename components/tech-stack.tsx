@@ -2,12 +2,14 @@ import type { CSSProperties } from "react";
 import { tech, type TechKey } from "@/lib/tech";
 import { tooltipBase } from "@/lib/styles";
 
-// A row of brand-colored technology icons, each revealing its name in a
-// tooltip on hover. Reuses the shared `tooltip` recipe (same one the footer
-// socials use) so it stays visually consistent. Per-icon brand color is fed
-// in via CSS custom properties on the `<li>` so a single static className can
-// still switch between light/dark brand colors — dynamic Tailwind class names
-// wouldn't survive the JIT compile. When a tech has a `url` (see lib/tech.ts),
+// A row of technology icons, neutral by default and revealing their brand
+// color (plus a name tooltip) on hover — keeps the row calm against the
+// page's otherwise grayscale palette while still rewarding a closer look.
+// Reuses the shared `tooltip` recipe (same one the footer socials use) so it
+// stays visually consistent. Per-icon brand color is fed in via CSS custom
+// properties on the `<li>` so a single static className can still switch
+// between light/dark brand colors — dynamic Tailwind class names wouldn't
+// survive the JIT compile. When a tech has a `url` (see lib/tech.ts),
 // its icon is a link out to that site; otherwise it's inert. Renders nothing
 // when there's no stack.
 // Positioning (margins, alignment) is left to the caller via `className` so
@@ -35,7 +37,7 @@ export function TechStack({
                     <Icon
                         size={size ?? 17}
                         aria-hidden
-                        className={`text-(--c) dark:text-(--cd) ${iconClassName ?? ""}`}
+                        className={`text-neutral-400 transition-colors group-hover:text-(--c) dark:text-neutral-500 dark:group-hover:text-(--cd) ${iconClassName ?? ""}`}
                     />
                 );
                 const tooltip = (
@@ -59,7 +61,7 @@ export function TechStack({
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label={label}
-                                className="group relative flex transition-opacity duration-200 ease-smooth hover:opacity-70"
+                                className="group relative flex"
                             >
                                 {icon}
                                 {tooltip}

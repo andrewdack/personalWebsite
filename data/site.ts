@@ -24,17 +24,17 @@ export const work: WorkEntry[] = [
         role: "Software Engineering Intern",
         company: "Obscurity Labs",
         url: "https://www.obscuritylabs.com",
-        description: "AI Agent Tooling ",
+        description: "AI Infrastructure",
         dates: "Jun 2026 — Aug 2026",
-        tech: ["go", "python", "node", "docker"],
+        tech: ["go", "python", "docker"],
     },
-    {
-        role: "Founding Organizer",
-        company: "TillyHacks",
-        url: "https://www.tillyhacks.org/",
-        description: "Chantilly High School's first ever student-led hackathon",
-        dates: "Dec 2025 — Present",
-    },
+    // {
+    //     role: "Founding Organizer",
+    //     company: "TillyHacks",
+    //     url: "https://www.tillyhacks.org/",
+    //     description: "Chantilly High School's first ever student-led hackathon",
+    //     dates: "Dec 2025 — Present",
+    // },
     {
         role: "Captain & Software Lead",
         company: 'FTC Team 9073 "Knightrix"',
@@ -78,8 +78,8 @@ export const projects: Project[] = [
         description:
             "Monkeytype for programmers. Full-stack typing test with real-time analytics, authentication, and leaderboards. Built w/ Next.js, FastAPI, & Supabase",
         link: "https://codertype.xyz",
-        github: "https://github.com/andrewdack/codertype.xyz",
-        tech: ["nextjs", "typescript", "fastapi", "supabase"],
+        github: "https://github.com/andrewdack/codertype",
+        tech: ["nextjs", "fastapi", "supabase"],
         dates: "Mar 2026 — May 2026",
     },
     {
