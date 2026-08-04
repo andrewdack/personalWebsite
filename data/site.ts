@@ -24,7 +24,7 @@ export const work: WorkEntry[] = [
         role: "Software Engineering Intern",
         company: "Obscurity Labs",
         url: "https://www.obscuritylabs.com",
-        description: "AI Infrastructure",
+        description: "AI Benchmarking Infrastructure",
         dates: "Jun 2026 — Aug 2026",
         tech: ["go", "python", "docker"],
     },
