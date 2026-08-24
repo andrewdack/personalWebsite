@@ -22,6 +22,11 @@ export type WorkEntry = {
 export const work: WorkEntry[] = [
     {
         role: "Software Engineering Intern",
+        company: "Todd",
+        url: "https://www.toddagriscience.com",
+    },
+    {
+        role: "Software Engineering Intern",
         company: "Obscurity Labs",
         url: "https://www.obscuritylabs.com",
         description: "AI Benchmarking Infrastructure",
@@ -35,14 +40,14 @@ export const work: WorkEntry[] = [
     //     description: "Chantilly High School's first ever student-led hackathon",
     //     dates: "Dec 2025 — Present",
     // },
-    {
-        role: "Captain & Software Lead",
-        company: 'FTC Team 9073 "Knightrix"',
-        url: "https://www.instagram.com/9073knightrix/",
-        description: "Finite state machines, PID loops, Kalman filter, computer vision, and autonomous pathing",
-        dates: "Sep 2024 — Present",
-        tech: ["java", "kotlin"],
-    },
+    // {
+    //     role: "Captain & Software Lead",
+    //     company: 'FTC Team 9073 "Knightrix"',
+    //     url: "https://www.instagram.com/9073knightrix/",
+    //     description: "Finite state machines, PID loops, Kalman filter, computer vision, and autonomous pathing",
+    //     dates: "Sep 2024 — Present",
+    //     tech: ["java", "kotlin"],
+    // },
 ];
 
 export type Project = {
