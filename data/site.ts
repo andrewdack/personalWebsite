@@ -24,6 +24,8 @@ export const work: WorkEntry[] = [
         role: "Software Engineering Intern",
         company: "Todd",
         url: "https://www.toddagriscience.com",
+        description: "Agritech Startup",
+        dates: "Aug 2026 — Nov 2026",
     },
     {
         role: "Software Engineering Intern",
