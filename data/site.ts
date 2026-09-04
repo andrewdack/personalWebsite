@@ -26,6 +26,7 @@ export const work: WorkEntry[] = [
         url: "https://www.toddagriscience.com",
         description: "Agritech Startup",
         dates: "Aug 2026 — Nov 2026",
+        tech: ["nextjs", "typescript", "postgres"],
     },
     {
         role: "Software Engineering Intern",

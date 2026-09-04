@@ -13,6 +13,7 @@ import {
     SiSupabase,
     SiReact,
     SiNodedotjs,
+    SiPostgresql,
     SiHtml5,
     SiCss,
     SiJavascript,
@@ -76,6 +77,12 @@ const registry = {
         Icon: SiNodedotjs,
         color: "#5FA04E",
         url: "https://nodejs.org",
+    },
+    postgres: {
+        label: "PostgreSQL",
+        Icon: SiPostgresql,
+        color: "#4169E1",
+        url: "https://www.postgresql.org",
     },
     python: {
         label: "Python",
