@@ -157,22 +157,34 @@ export default function Home() {
                     style={cascade()}
                 />
                 <div className="flex flex-col items-start gap-4 pt-[clamp(0.75rem,2vh,2.25rem)] sm:flex-row sm:items-center sm:justify-between sm:gap-6.5">
-                    <div className="animate-fade-in-up flex items-center gap-5.5" style={cascade()}>
-                        {socialLinks.map(({ label, href, Icon, size }) => (
+                    <div className="animate-fade-in-up" style={cascade()}>
+                        <div className="flex items-center gap-5.5">
+                            {socialLinks.map(({ label, href, Icon, size }) => (
+                                <a
+                                    key={label}
+                                    href={href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label={label}
+                                    className={`group relative ${iconLink}`}
+                                >
+                                    <Icon size={size ?? 20} />
+                                    <span aria-hidden className={tooltip}>
+                                        {label}
+                                    </span>
+                                </a>
+                            ))}
+                        </div>
+                        <p className="mt-2 text-[11px]">
                             <a
-                                key={label}
-                                href={href}
+                                href="https://samuelzhang.ca"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                aria-label={label}
-                                className={`group relative ${iconLink}`}
+                                className="text-neutral-300 transition-colors hover:text-neutral-500 dark:text-neutral-700 dark:hover:text-neutral-500"
                             >
-                                <Icon size={size ?? 20} />
-                                <span aria-hidden className={tooltip}>
-                                    {label}
-                                </span>
+                                site template from samuelzhang.ca
                             </a>
-                        ))}
+                        </p>
                     </div>
                     <div className="animate-fade-in-up w-full sm:w-auto" style={cascade()}>
                         <NowPlaying />
