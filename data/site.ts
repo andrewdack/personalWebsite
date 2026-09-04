@@ -72,14 +72,14 @@ export const projects: Project[] = [
         tech: ["express", "swift", "typescript"],
         dates: "Jun 2026",
     },
-    {
-        title: "DackDB",
-        description:
-            "In-memory relational database in Go with an append-only WAL, crash recovery, and a SQL execution layer.",
-        github: "https://github.com/andrewdack/dackdb/tree/tui",
-        tech: ["go", "bubbletea"],
-        dates: "May 2026",
-    },
+    // {
+    //     title: "DackDB",
+    //     description:
+    //         "In-memory relational database in Go with an append-only WAL, crash recovery, and a SQL execution layer.",
+    //     github: "https://github.com/andrewdack/dackdb/tree/tui",
+    //     tech: ["go", "bubbletea"],
+    //     dates: "May 2026",
+    // },
     {
         title: "Codertype",
         description:
