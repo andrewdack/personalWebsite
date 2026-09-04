@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import { FiArrowUpRight } from "react-icons/fi";
 import { SiGithub } from "react-icons/si";
-import { projects } from "@/data/site";
+import { projects, type Project } from "@/data/site";
 import { iconLink } from "@/lib/styles";
 import { TechStack } from "@/components/tech-stack";
 
@@ -13,21 +13,25 @@ import { TechStack } from "@/components/tech-stack";
 // rather than via a counter passed in here — a mutable counter called inside
 // this child would run *after* the parent's remaining inline JSX, throwing the
 // stagger order off. The /projects page is where richer per-project detail
-// (visuals, tech, writeups) will hang off these entries later. Pass `limit`
-// to show only the first N projects — the home page teases the top few and
-// links through to /projects for the full list. Pass `showDates` to render
-// each project's `dates` (same small-gray-text treatment as the Experience
-// dates) — the home page teaser omits them to stay compact; /projects shows them.
+// (visuals, tech, writeups) will hang off these entries later. Pass `items`
+// to render an explicit subset (e.g. the home page's featured picks) instead
+// of the full `projects` list, and `limit` to additionally cap how many of
+// those are shown. Pass `showDates` to render each project's `dates` (same
+// small-gray-text treatment as the Experience dates) — the home page teaser
+// omits them to stay compact; /projects shows them.
 export function ProjectList({
+    items,
     itemStyles,
     limit,
     showDates,
 }: {
+    items?: Project[];
     itemStyles?: CSSProperties[];
     limit?: number;
     showDates?: boolean;
 }) {
-    const shown = limit === undefined ? projects : projects.slice(0, limit);
+    const source = items ?? projects;
+    const shown = limit === undefined ? source : source.slice(0, limit);
     return (
         <ul className="mt-[clamp(0.5rem,1.6vh,1.125rem)] space-y-[clamp(0.5rem,1.6vh,1.625rem)]">
             {shown.map((project, i) => (

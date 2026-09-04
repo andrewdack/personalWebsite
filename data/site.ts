@@ -60,6 +60,7 @@ export type Project = {
     link?: string; // live site link, omit to hide the icon
     tech?: TechKey[]; // stack shown as icons under the title; keys from lib/tech.ts
     dates?: string; // e.g. "Jun 2025 — Present", omit to hide; shown on /projects only
+    featured?: boolean; // shown in the home page's teaser list; /projects always shows everything
 };
 
 export const projects: Project[] = [
@@ -71,6 +72,7 @@ export const projects: Project[] = [
         github: "https://github.com/andrewdack/zenly",
         tech: ["express", "swift", "typescript"],
         dates: "Jun 2026",
+        featured: true,
     },
     {
         title: "DackDB",
@@ -88,6 +90,7 @@ export const projects: Project[] = [
         github: "https://github.com/andrewdack/codertype",
         tech: ["nextjs", "fastapi", "supabase"],
         dates: "Mar 2026 — May 2026",
+        featured: true,
     },
     {
         title: "ReliefChain",

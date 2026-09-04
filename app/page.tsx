@@ -23,6 +23,8 @@ const socialLinks = [
 ];
 
 export default function Home() {
+    const featuredProjects = projects.filter((project) => project.featured);
+
     // Continuous per-line stagger for the page-load entrance
     const cascadeStepMs = 75; // gap between each piece cascading in
     let cascadeStep = 3;
@@ -126,7 +128,10 @@ export default function Home() {
                         />
                     </Link>
                 </h2>
-                <ProjectList limit={3} itemStyles={projects.slice(0, 3).map(() => cascade())} />
+                <ProjectList
+                    items={featuredProjects}
+                    itemStyles={featuredProjects.map(() => cascade())}
+                />
                 <Link
                     href="/projects"
                     className={`animate-fade-in-up group mt-[clamp(0.75rem,1.8vh,1.5rem)] flex w-fit items-center gap-1 text-[15px] font-medium ${linkHover}`}
