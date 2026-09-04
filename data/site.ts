@@ -90,14 +90,6 @@ export const projects: Project[] = [
         dates: "Mar 2026 — May 2026",
     },
     {
-        title: "Quick Claude",
-        description:
-            "Summon a floating Claude chat panel on your Mac with ⌥Space, using your Claude Code subscription instead of an API key.",
-        github: "https://github.com/andrewdack/quick-claude",
-        tech: ["swift", "node", "claude"],
-        dates: "Jul 2026",
-    },
-    {
         title: "ReliefChain",
         description:
             "Web3 donation platform on the Solana blockchain that connects donors directly to relief organizations, bypassing bureaucratic delays for transparent, fast crypto funding transfers.",
