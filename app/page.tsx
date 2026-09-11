@@ -22,6 +22,8 @@ const socialLinks = [
     { label: "Send an email!", href: socials.email, Icon: IoMdMail, size: 21 },
 ];
 
+// Site template from samuelzhang.ca
+
 export default function Home() {
     const featuredProjects = projects.filter((project) => project.featured);
 
@@ -175,16 +177,6 @@ export default function Home() {
                                 </a>
                             ))}
                         </div>
-                        <p className="mt-2 text-[11px]">
-                            <a
-                                href="https://samuelzhang.ca"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-neutral-300 transition-colors hover:text-neutral-500 dark:text-neutral-700 dark:hover:text-neutral-500"
-                            >
-                                site template from samuelzhang.ca
-                            </a>
-                        </p>
                     </div>
                     <div className="animate-fade-in-up w-full sm:w-auto" style={cascade()}>
                         <NowPlaying />
